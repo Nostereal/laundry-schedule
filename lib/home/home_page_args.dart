@@ -1,5 +1,6 @@
 class HomePageArgs {
   final String title;
+  final int? bottomNavIndex;
 
-  HomePageArgs(this.title);
+  HomePageArgs(this.title, this.bottomNavIndex);
 }

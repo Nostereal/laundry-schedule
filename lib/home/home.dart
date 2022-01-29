@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:washing_schedule/auth/auth.dart';
 import 'package:washing_schedule/booking_creation_details/booking_creation_details.dart';
 import 'package:washing_schedule/design_system/theme.dart';
+import 'package:washing_schedule/profile/profile.dart';
+import 'package:washing_schedule/routing/routing.dart';
 import 'package:washing_schedule/schedule/schedule.dart';
 import 'package:washing_schedule/utils/routing.dart';
 
@@ -28,23 +30,19 @@ class MyApp extends StatelessWidget {
       title: 'Laundry schedule',
       theme: theme,
       initialRoute: HomePage.routeName,
+      onGenerateRoute: generateRoute,
       onGenerateInitialRoutes: (String initialRouteName) {
         return [
           MaterialPageRoute(
             builder: (context) => const HomePage(),
             settings: RouteSettings(
               name: HomePage.routeName,
-              arguments: HomePageArgs('Laundry schedule'),
+              arguments: HomePageArgs('Laundry schedule', 0),
             ),
           ),
         ];
       },
-      routes: {
-        HomePage.routeName: (context) => const HomePage(),
-        AuthPage.routeName: (context) => BottomSheet(builder: (context) => const AuthPage(), onClosing: () {},),
-        BookingCreationDetailsRoute.routeName: (context) =>
-            const BookingCreationDetailsRoute(),
-      },
+      routes: routes,
     );
   }
 }
@@ -59,8 +57,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final PageController bottomBarController = PageController();
   int _bottomBarIndex = 0;
+  PageController bottomBarController = PageController();
 
   void onPageChanged(int index) {
     setState(() {
@@ -73,6 +71,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final HomePageArgs args = extractArgsFrom(context);
 
+    setState(() {
+      bottomBarController = PageController(initialPage: args.bottomNavIndex ?? 0);
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Text(args.title),
@@ -83,7 +85,7 @@ class _HomePageState extends State<HomePage> {
         controller: bottomBarController,
         children: const [
           SchedulePage(),
-          Center(child: Text("Profile")),
+          ProfilePage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

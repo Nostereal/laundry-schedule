@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:washing_schedule/design_system/form_input.dart';
 import 'package:washing_schedule/home/home.dart';
 
@@ -63,8 +64,11 @@ class _AuthPageState extends State<AuthPage> {
                 minimumSize: const Size.fromHeight(48),
               ),
               onPressed: () {
+                const userId = 'test_user_id';
+                storeUserId(userId);
+                // todo: perform server auth
                 // todo: send request and handle the result
-                Navigator.pop(context, 'test_user_id');
+                Navigator.pop(context, userId);
               },
               child: const Text('Log in'),
             ),
@@ -73,6 +77,18 @@ class _AuthPageState extends State<AuthPage> {
       ),
     );
   }
+
+  Future<void> storeUserId(String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(prefsUserIdKey, userId);
+  }
+}
+
+const String prefsUserIdKey = 'userId';
+
+Future<String?> getUserId() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString(prefsUserIdKey);
 }
 
 void requireAuth(
@@ -80,25 +96,25 @@ void requireAuth(
   Function(Success)? onAuthorized,
   Function()? onNonAuthorized,
 }) {
-  // todo: perform auth
-
-  showModalBottomSheet(
-    context: context,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    builder: (context) => const AuthPage(),
-  ).then(
-    (userId) {
-      if (userId != null) {
-        // todo: store userId on device
-        onAuthorized?.call(Success(userId));
-      } else {
-        onNonAuthorized?.call();
-      }
-    },
-  );
-
-  // onAuthorized?.call(Success('test_user_id'));
-  // onNonAuthorized?.call();
+  getUserId().then((userId) {
+    if (userId != null) {
+      onAuthorized?.call(Success(userId));
+    } else {
+      showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        builder: (context) => const AuthPage(),
+      ).then(
+        (userId) {
+          if (userId != null) {
+            onAuthorized?.call(Success(userId));
+          } else {
+            onNonAuthorized?.call();
+          }
+        },
+      );
+    }
+  });
 }
 
 class AuthResult {}
