@@ -43,7 +43,8 @@ class _CalendarPagerViewState extends State<CalendarPagerView> {
   final ItemScrollController itemScrollController = ItemScrollController();
   final PageController pageViewController =
       PageController(initialPage: _initialIndex);
-  final double selectedItemAlignment = 0.393;
+  final double selectedItemAlignment =
+      0.393; // todo: calculate from display width and card size
   final Duration _duration = const Duration(milliseconds: 300);
 
   bool _isPageAnimating = false;
@@ -169,15 +170,14 @@ class _DaySelectorListViewState extends State<DaySelectorListView> {
               margin: const EdgeInsets.symmetric(horizontal: 8),
               child: InkWell(
                 onTap: () {
-                  // setState(() {
-                  //   selectedIndex = index;
-                  // });
                   widget.onTap?.call(index);
                 },
                 borderRadius: borderRadius,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 4,
+                  ),
                   decoration: BoxDecoration(
                       borderRadius: borderRadius,
                       color: isItemSelected
@@ -188,17 +188,23 @@ class _DaySelectorListViewState extends State<DaySelectorListView> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(weekday,
-                            style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: isItemSelected
-                                    ? FontWeight.w600
-                                    : FontWeight.normal)),
-                        Text(month,
-                            style: TextStyle(
-                                fontWeight: isItemSelected
-                                    ? FontWeight.w600
-                                    : FontWeight.normal)),
+                        Text(
+                          weekday,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: isItemSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                          ),
+                        ),
+                        Text(
+                          month,
+                          style: TextStyle(
+                            fontWeight: isItemSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -244,7 +250,7 @@ class _DayListState extends State<DayList> {
   void initState() {
     super.initState();
     widgets = windowed(bookings, _maxBookings).map((books) {
-      // todo: pass timeBracket separately from bookings for empty books case
+      // todo: pass timeBracket separately from bookings for empty bracket case
       List<Widget> bookings = books
           // ignore: unnecessary_cast
           .map((e) => Booking(

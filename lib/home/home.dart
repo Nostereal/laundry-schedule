@@ -21,9 +21,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
         systemNavigationBarColor: Colors.transparent,
-        statusBarColor: Colors.transparent));
+        statusBarColor: Colors.transparent,
+      ),
+    );
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     return MaterialApp(
@@ -72,7 +75,8 @@ class _HomePageState extends State<HomePage> {
     final HomePageArgs args = extractArgsFrom(context);
 
     setState(() {
-      bottomBarController = PageController(initialPage: args.bottomNavIndex ?? 0);
+      bottomBarController =
+          PageController(initialPage: args.bottomNavIndex ?? 0);
     });
 
     return Scaffold(
