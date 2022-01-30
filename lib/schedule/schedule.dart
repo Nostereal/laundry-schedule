@@ -4,6 +4,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:washing_schedule/auth/auth.dart';
 import 'package:washing_schedule/booking_creation_details/booking_creation_details.dart';
 import 'package:washing_schedule/booking_creation_details/booking_creation_details_args.dart';
+import 'package:washing_schedule/design_system/theme.dart';
 import 'package:washing_schedule/home/home.dart';
 import 'package:washing_schedule/mocked_data/bookings.dart';
 import 'package:washing_schedule/utils/lists.dart';
@@ -378,12 +379,21 @@ class FreeToBookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScheduleCard(
-      title: title,
-      color: Theme.of(context).canvasColor,
-      icon: Icons.add,
-      border: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
-      onTap: onTap,
+    final theme = Theme.of(context);
+    return Theme(
+      data: theme.copyWith(
+        cardColor: theme.canvasColor,
+        cardTheme: theme.cardTheme.copyWith(
+          shape: cardShape.copyWith(
+            side: BorderSide(color: theme.primaryColor, width: 1.5),
+          ),
+        ),
+      ),
+      child: ScheduleCard(
+        title: title,
+        icon: Icons.add,
+        onTap: onTap,
+      ),
     );
   }
 }
@@ -392,15 +402,11 @@ class ScheduleCard extends StatelessWidget {
   const ScheduleCard({
     Key? key,
     required this.title,
-    this.color,
-    this.border,
     this.icon,
     this.onTap = _defaultOnTap,
   }) : super(key: key);
 
   final String title;
-  final Color? color;
-  final BorderSide? border;
   final IconData? icon;
   final Function() onTap;
 
@@ -408,19 +414,7 @@ class ScheduleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CardTheme cardTheme = CardTheme.of(context);
-    final cardColor =
-        color ?? cardTheme.color ?? Theme.of(context).primaryColor;
-    final shape = border == null
-        ? null
-        : RoundedRectangleBorder(
-            side: border!,
-            borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-          );
     return Card(
-      elevation: 2,
-      color: cardColor,
-      shape: shape,
       child: InkWell(
         onTap: onTap,
         child: Padding(

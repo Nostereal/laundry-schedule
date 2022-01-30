@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:washing_schedule/auth/auth.dart';
 import 'package:washing_schedule/design_system/list_item.dart';
@@ -32,36 +31,56 @@ class _ProfilePageState extends State<ProfilePage> {
         future: futureUserId,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(88),
-                      ),
-                      child: const Icon(Icons.catching_pokemon, size: 88),
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(88),
+                            ),
+                            child: const Icon(Icons.catching_pokemon, size: 88),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const ListItem(
+                          paddingHorizontal: horizontalPadding,
+                          leftItem: Icon(Icons.person_outlined),
+                          rightItem: Text('Михалевич Тёмочка'),
+                        ),
+                        const ListItem(
+                          paddingHorizontal: horizontalPadding,
+                          leftItem: Icon(Icons.house_outlined),
+                          rightItem: Text('Общежитие №4'),
+                        ),
+                        const ListItem(
+                          paddingHorizontal: horizontalPadding,
+                          leftItem: Icon(Icons.bed_outlined),
+                          rightItem: Text('Комната №127'),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  const ListItem(
-                    paddingHorizontal: horizontalPadding,
-                    leftItem: Icon(Icons.person_outlined),
-                    rightItem: Text('Михалевич Тёмочка'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: horizontalPadding),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.schedule_outlined),
+                        SizedBox(width: 4),
+                        Text('Мои записи'),
+                      ],
+                    ),
                   ),
-                  const ListItem(
-                    paddingHorizontal: horizontalPadding,
-                    leftItem: Icon(Icons.house_outlined),
-                    rightItem: Text('Общежитие №4'),
-                  ),
-                  const ListItem(
-                    paddingHorizontal: horizontalPadding,
-                    leftItem: Icon(Icons.bed_outlined),
-                    rightItem: Text('Комната №127'),
-                  ),
-                ],
-              ),
+                )
+              ],
             );
           } else if (snapshot.hasError) {
             return const Text('ERROOOOOOOR!!!!');

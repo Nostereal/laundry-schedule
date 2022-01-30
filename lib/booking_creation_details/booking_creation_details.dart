@@ -32,9 +32,6 @@ class BookingCreationDetailsRoute extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(48),
-            ),
             child: const Text("Create booking"),
             onPressed: () {
               showTextSnackBar(context, "Типа создаю запись 😐");
@@ -44,7 +41,9 @@ class BookingCreationDetailsRoute extends StatelessWidget {
       ],
       body: Padding(
         padding: const EdgeInsets.symmetric(
-            vertical: 24, horizontal: horizontalPadding),
+          vertical: 24,
+          horizontal: horizontalPadding,
+        ),
         child: Column(
           children: [
             Expanded(
@@ -59,16 +58,11 @@ class BookingCreationDetailsRoute extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
-                        child: Text("Name: ", style: textTheme.headline6),
+                        child: Text("Name: ", style: textTheme.headline5),
                       ),
                       Text(
                         "${args.user.lastName} ${args.user.firstName}",
-                        style: textTheme.headline6?.copyWith(
-                          fontWeight: FontWeight.normal,
-                          fontSize: textTheme.headline6?.fontSize != null
-                              ? textTheme.headline6!.fontSize! - 2
-                              : null,
-                        ),
+                        style: textTheme.bodyText1,
                       ),
                     ],
                   ),
@@ -79,17 +73,12 @@ class BookingCreationDetailsRoute extends StatelessWidget {
                         padding: const EdgeInsets.only(right: 6),
                         child: Text(
                           "Date: ",
-                          style: textTheme.headline6,
+                          style: textTheme.headline5,
                         ),
                       ),
                       Text(
                         dateFormat.format(start),
-                        style: textTheme.headline6?.copyWith(
-                          fontWeight: FontWeight.normal,
-                          fontSize: textTheme.headline6?.fontSize != null
-                              ? textTheme.headline6!.fontSize! - 2
-                              : null,
-                        ),
+                        style: textTheme.bodyText1,
                       ),
                     ],
                   ),
@@ -99,16 +88,11 @@ class BookingCreationDetailsRoute extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
                         child:
-                            Text("Time bracket: ", style: textTheme.headline6),
+                            Text("Time bracket: ", style: textTheme.headline5),
                       ),
                       Text(
                         "${timeFormat.format(start)} — ${timeFormat.format(end)}",
-                        style: textTheme.headline6?.copyWith(
-                          fontWeight: FontWeight.normal,
-                          fontSize: textTheme.headline6?.fontSize != null
-                              ? textTheme.headline6!.fontSize! - 2
-                              : null,
-                        ),
+                        style: textTheme.bodyText1,
                       ),
                     ],
                   )

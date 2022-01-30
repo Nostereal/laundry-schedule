@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:washing_schedule/auth/auth.dart';
-import 'package:washing_schedule/booking_creation_details/booking_creation_details.dart';
 import 'package:washing_schedule/design_system/theme.dart';
 import 'package:washing_schedule/profile/profile.dart';
 import 'package:washing_schedule/routing/routing.dart';
@@ -31,7 +29,9 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Laundry schedule',
-      theme: theme,
+      theme: lightTheme,
+      // todo: create dark theme
+      darkTheme: lightTheme,
       initialRoute: HomePage.routeName,
       onGenerateRoute: generateRoute,
       onGenerateInitialRoutes: (String initialRouteName) {
