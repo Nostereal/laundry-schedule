@@ -5,11 +5,12 @@ import 'package:washing_schedule/auth/auth.dart';
 import 'package:washing_schedule/booking_creation_details/booking_creation_details.dart';
 import 'package:washing_schedule/booking_creation_details/booking_creation_details_args.dart';
 import 'package:washing_schedule/design_system/theme.dart';
+import 'package:washing_schedule/home/app_bar_provider.dart';
 import 'package:washing_schedule/home/home.dart';
 import 'package:washing_schedule/mocked_data/bookings.dart';
 import 'package:washing_schedule/utils/lists.dart';
 
-class SchedulePage extends StatelessWidget {
+class SchedulePage extends StatelessWidget implements AppBarProvider {
   const SchedulePage({Key? key}) : super(key: key);
 
   @override
@@ -27,6 +28,13 @@ class SchedulePage extends StatelessWidget {
           Expanded(child: CalendarPagerView()),
         ],
       ),
+    );
+  }
+
+  @override
+  AppBar? provideAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Laundry schedule'),
     );
   }
 }
@@ -166,7 +174,7 @@ class _DaySelectorListViewState extends State<DaySelectorListView> {
           final String weekday = DateFormat("dd").format(day);
           final String month = DateFormat("MMM").format(day);
           final isItemSelected = widget.selectedIndex == index;
-
+          final themeColor = Theme.of(context).colorScheme;
           return Container(
               margin: const EdgeInsets.symmetric(horizontal: 8),
               child: InkWell(
@@ -182,8 +190,8 @@ class _DaySelectorListViewState extends State<DaySelectorListView> {
                   decoration: BoxDecoration(
                       borderRadius: borderRadius,
                       color: isItemSelected
-                          ? Colors.amber[600]
-                          : Colors.amberAccent),
+                          ? themeColor.secondary
+                          : themeColor.secondaryVariant),
                   child: SizedBox.square(
                     dimension: 64,
                     child: Column(
@@ -382,10 +390,10 @@ class FreeToBookCard extends StatelessWidget {
     final theme = Theme.of(context);
     return Theme(
       data: theme.copyWith(
-        cardColor: theme.canvasColor,
         cardTheme: theme.cardTheme.copyWith(
-          shape: cardShape.copyWith(
-            side: BorderSide(color: theme.primaryColor, width: 1.5),
+          color: Theme.of(context).canvasColor,
+          shape: Themes.cardShape.copyWith(
+            side: BorderSide(color: theme.cardTheme.color!, width: 1.5),
           ),
         ),
       ),
@@ -441,14 +449,15 @@ class ScheduleCard extends StatelessWidget {
 
 class TimeLineDivider extends StatelessWidget {
   const TimeLineDivider(
-      {Key? key, required this.time, this.color = Colors.black26})
+      {Key? key, required this.time, this.color})
       : super(key: key);
 
   final String time;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
+    final color = this.color ?? Theme.of(context).dividerColor;
     return Row(
       children: [
         Text(

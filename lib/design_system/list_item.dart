@@ -28,7 +28,9 @@ class ListItem extends StatelessWidget {
         child: Row(
           children: [
             if (leftItem != null) ...[leftItem!, const SizedBox(width: 8)],
-            rightItem,
+            Expanded(
+              child: rightItem,
+            ),
           ],
         ),
       ),

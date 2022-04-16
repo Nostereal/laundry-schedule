@@ -3,11 +3,13 @@ import 'package:washing_schedule/booking_creation_details/booking_creation_detai
 import 'package:washing_schedule/home/home.dart';
 import 'package:washing_schedule/home/home_page_args.dart';
 import 'package:washing_schedule/profile/profile.dart';
+import 'package:washing_schedule/settings/settings.dart';
 
 final Map<String, Widget Function(BuildContext)> routes = {
   HomePage.routeName: (context) => const HomePage(),
   BookingCreationDetailsRoute.routeName: (context) =>
       const BookingCreationDetailsRoute(),
+  SettingsPage.routeName: (context) => const SettingsPage(),
 };
 
 Route<dynamic>? generateRoute(RouteSettings settings) {

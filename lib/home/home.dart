@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:washing_schedule/design_system/theme.dart';
+import 'package:washing_schedule/design_system/theme_notifier.dart';
 import 'package:washing_schedule/profile/profile.dart';
 import 'package:washing_schedule/routing/routing.dart';
 import 'package:washing_schedule/schedule/schedule.dart';
 import 'package:washing_schedule/utils/routing.dart';
-
+import 'app_bar_provider.dart';
 import 'home_page_args.dart';
 
 const double horizontalPadding = 20;
@@ -27,25 +29,32 @@ class MyApp extends StatelessWidget {
     );
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-    return MaterialApp(
-      title: 'Laundry schedule',
-      theme: lightTheme,
-      // todo: create dark theme
-      darkTheme: lightTheme,
-      initialRoute: HomePage.routeName,
-      onGenerateRoute: generateRoute,
-      onGenerateInitialRoutes: (String initialRouteName) {
-        return [
-          MaterialPageRoute(
-            builder: (context) => const HomePage(),
-            settings: RouteSettings(
-              name: HomePage.routeName,
-              arguments: HomePageArgs('Laundry schedule', 0),
-            ),
-          ),
-        ];
-      },
-      routes: routes,
+    return ChangeNotifierProvider(
+      create: (_) => ThemeNotifier(),
+      child: Consumer<ThemeNotifier>(
+        builder: (context ,ThemeNotifier themeNotifier, child) {
+          return MaterialApp(
+            title: 'Laundry schedule',
+            themeMode: themeNotifier.themeMode,
+            theme: Themes.lightTheme,
+            darkTheme: Themes.darkTheme,
+            initialRoute: HomePage.routeName,
+            onGenerateRoute: generateRoute,
+            onGenerateInitialRoutes: (String initialRouteName) {
+              return [
+                MaterialPageRoute(
+                  builder: (context) => const HomePage(),
+                  settings: RouteSettings(
+                    name: HomePage.routeName,
+                    arguments: HomePageArgs('Laundry schedule', 0),
+                  ),
+                ),
+              ];
+            },
+            routes: routes,
+          );
+        },
+      ),
     );
   }
 }
@@ -79,18 +88,18 @@ class _HomePageState extends State<HomePage> {
           PageController(initialPage: args.bottomNavIndex ?? 0);
     });
 
+    const List<AppBarProvider> pages = [
+      SchedulePage(),
+      ProfilePage(),
+    ];
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(args.title),
-      ),
+      appBar: pages[_bottomBarIndex].provideAppBar(context),
       body: PageView(
         restorationId: 'homePageView',
         physics: const NeverScrollableScrollPhysics(),
         controller: bottomBarController,
-        children: const [
-          SchedulePage(),
-          ProfilePage(),
-        ],
+        children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _bottomBarIndex,

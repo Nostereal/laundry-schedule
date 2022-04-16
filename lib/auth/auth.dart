@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:washing_schedule/auth/auth_repository.dart';
 import 'package:washing_schedule/design_system/form_input.dart';
 import 'package:washing_schedule/home/home.dart';
 
@@ -14,6 +15,11 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   final _formKey = GlobalKey<FormState>();
+  final AuthRepository _authRepository = AuthRepository();
+  bool _isLoading = false;
+
+  final loginController = TextEditingController(text: 'Михалев');
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +40,7 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                   const SizedBox(height: 12),
                   FormInput(
-                    initialValue: 'Михалев',
+                    controller: loginController,
                     hint: 'Username',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -45,6 +51,7 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                   const SizedBox(height: 8),
                   FormInput(
+                    controller: passwordController,
                     hint: 'Password',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -66,16 +73,40 @@ class _AuthPageState extends State<AuthPage> {
               onPressed: () {
                 const userId = 'test_user_id';
                 storeUserId(userId);
+                Navigator.pop(context, userId);
+                // authorize().then((sessionId) => Navigator.pop(context, sessionId));
                 // todo: perform server auth
                 // todo: send request and handle the result
-                Navigator.pop(context, userId);
               },
-              child: const Text('Log in'),
+              child: _isLoading
+                  ? const CircularProgressIndicator()
+                  : const Text('Log in'),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<String> authorize() {
+    setState(() {
+      _isLoading = true;
+    });
+    return _authRepository
+        .authorize(
+      AuthRequest(
+        loginController.text,
+        passwordController.text,
+      ),
+    )
+        .then((resp) {
+      // todo: store sessionId
+      storeUserId(resp.sessionId);
+      setState(() {
+        _isLoading = false;
+      });
+      return resp.sessionId;
+    });
   }
 
   Future<void> storeUserId(String userId) async {
@@ -102,7 +133,12 @@ void requireAuth(
     } else {
       showModalBottomSheet(
         context: context,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
         builder: (context) => const AuthPage(),
       ).then(
         (userId) {
