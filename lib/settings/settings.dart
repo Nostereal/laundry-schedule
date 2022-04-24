@@ -47,6 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
           Center(
             child: Consumer(
               builder: (context, ThemeNotifier themeNotifier, child) => CupertinoSlidingSegmentedControl(
+                thumbColor: Theme.of(context).colorScheme.secondaryVariant,
                 groupValue: themeNotifier.themeMode,
                 // padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 children: {

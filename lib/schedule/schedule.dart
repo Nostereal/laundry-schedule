@@ -67,7 +67,7 @@ class _CalendarPagerViewState extends State<CalendarPagerView> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: SizedBox(
-            height: 64,
+            height: DaySelectorListView.height * DaySelectorListView.selectedItemScale,
             child: DaySelectorListView(
               selectedItemAlignment: selectedItemAlignment,
               itemScrollController: itemScrollController,
@@ -122,13 +122,17 @@ class _CalendarPagerViewState extends State<CalendarPagerView> {
 }
 
 class DaySelectorListView extends StatefulWidget {
-  const DaySelectorListView(
-      {Key? key,
-      required this.selectedItemAlignment,
-      required this.itemScrollController,
-      this.selectedIndex = 2,
-      this.onTap})
-      : super(key: key);
+
+  static double height = 64;
+  static double selectedItemScale = 1.15;
+
+  const DaySelectorListView({
+    Key? key,
+    required this.selectedItemAlignment,
+    required this.itemScrollController,
+    this.selectedIndex = 2,
+    this.onTap,
+  }) : super(key: key);
 
   final double selectedItemAlignment;
   final ItemScrollController itemScrollController;
@@ -164,6 +168,9 @@ class _DaySelectorListViewState extends State<DaySelectorListView> {
   @override
   Widget build(BuildContext context) {
     return ScrollablePositionedList.builder(
+        padding: EdgeInsets.symmetric(
+          vertical: DaySelectorListView.height / 2 * (DaySelectorListView.selectedItemScale - 1),
+        ),
         itemScrollController: widget.itemScrollController,
         initialScrollIndex: widget.selectedIndex,
         initialAlignment: widget.selectedItemAlignment,
@@ -175,7 +182,10 @@ class _DaySelectorListViewState extends State<DaySelectorListView> {
           final String month = DateFormat("MMM").format(day);
           final isItemSelected = widget.selectedIndex == index;
           final themeColor = Theme.of(context).colorScheme;
-          return Container(
+          return AnimatedScale(
+            scale: isItemSelected ? DaySelectorListView.selectedItemScale : 1,
+            duration: const Duration(milliseconds: 300),
+            child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 8),
               child: InkWell(
                 onTap: () {
@@ -195,6 +205,7 @@ class _DaySelectorListViewState extends State<DaySelectorListView> {
                   child: SizedBox.square(
                     dimension: 64,
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
@@ -218,7 +229,9 @@ class _DaySelectorListViewState extends State<DaySelectorListView> {
                     ),
                   ),
                 ),
-              ));
+              ),
+            ),
+          );
         });
   }
 }
@@ -277,18 +290,18 @@ class _DayListState extends State<DayList> {
             onTap: () {
               requireAuth(
                 context,
-                onNonAuthorized: () {
-                  showTextSnackBar(context, 'Authorization failed 😔');
-                },
-                onAuthorized: (authResult) {
+              ).then((authResult) {
+                if (authResult is Success) {
                   Navigator.pushNamed(
                     context,
                     BookingCreationDetailsRoute.routeName,
                     arguments:
                         BookingCreationDetailsArgs(books.first.timeBracket, me),
                   );
-                },
-              );
+                } else {
+                  showTextSnackBar(context, 'Authorization failed 😔');
+                }
+              });
             },
           ),
         );
@@ -448,8 +461,7 @@ class ScheduleCard extends StatelessWidget {
 }
 
 class TimeLineDivider extends StatelessWidget {
-  const TimeLineDivider(
-      {Key? key, required this.time, this.color})
+  const TimeLineDivider({Key? key, required this.time, this.color})
       : super(key: key);
 
   final String time;

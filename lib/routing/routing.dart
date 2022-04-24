@@ -6,25 +6,30 @@ import 'package:washing_schedule/profile/profile.dart';
 import 'package:washing_schedule/settings/settings.dart';
 
 final Map<String, Widget Function(BuildContext)> routes = {
-  HomePage.routeName: (context) => const HomePage(),
+  // HomePage.routeName: (context) => const HomePage(),
   BookingCreationDetailsRoute.routeName: (context) =>
       const BookingCreationDetailsRoute(),
   SettingsPage.routeName: (context) => const SettingsPage(),
 };
 
-Route<dynamic>? generateRoute(RouteSettings settings) {
+Route<Object>? generateRoute(RouteSettings settings) {
   return routeGenerator[settings.name!]?.call(settings);
   // todo: should i create 404 page?
 }
 
-final Map<String, Route<dynamic> Function(RouteSettings)> routeGenerator = {
-  ProfilePage.routeName: (settings) {
-    return MaterialPageRoute(
-      builder: (context) => const HomePage(),
-      settings: RouteSettings(
-        name: settings.name,
-        arguments: HomePageArgs('Profile', 1),
+final Map<String, Route<Object> Function(RouteSettings)> routeGenerator = {
+  HomePage.routeName: (settings) => MaterialPageRoute(
+        builder: (context) => const HomePage(),
+        settings: RouteSettings(
+          name: settings.name,
+          arguments: HomePageArgs('Laundry schedule', 0),
+        ),
       ),
-    );
-  },
+  ProfilePage.routeName: (settings) => MaterialPageRoute(
+        builder: (context) => const HomePage(),
+        settings: RouteSettings(
+          name: settings.name,
+          arguments: HomePageArgs('Profile', 1),
+        ),
+      ),
 };

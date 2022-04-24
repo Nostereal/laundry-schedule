@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:washing_schedule/design_system/theme.dart';
 import 'package:washing_schedule/design_system/theme_notifier.dart';
@@ -13,7 +14,9 @@ import 'home_page_args.dart';
 const double horizontalPadding = 20;
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    Phoenix(child: const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -32,7 +35,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => ThemeNotifier(),
       child: Consumer<ThemeNotifier>(
-        builder: (context ,ThemeNotifier themeNotifier, child) {
+        builder: (context, ThemeNotifier themeNotifier, child) {
           return MaterialApp(
             title: 'Laundry schedule',
             themeMode: themeNotifier.themeMode,
@@ -40,17 +43,17 @@ class MyApp extends StatelessWidget {
             darkTheme: Themes.darkTheme,
             initialRoute: HomePage.routeName,
             onGenerateRoute: generateRoute,
-            onGenerateInitialRoutes: (String initialRouteName) {
-              return [
-                MaterialPageRoute(
-                  builder: (context) => const HomePage(),
-                  settings: RouteSettings(
-                    name: HomePage.routeName,
-                    arguments: HomePageArgs('Laundry schedule', 0),
-                  ),
-                ),
-              ];
-            },
+            // onGenerateInitialRoutes: (String initialRouteName) {
+            //   return [
+            //     MaterialPageRoute(
+            //       builder: (context) => const HomePage(),
+            //       settings: RouteSettings(
+            //         name: HomePage.routeName,
+            //         arguments: HomePageArgs('Laundry schedule', 0),
+            //       ),
+            //     ),
+            //   ];
+            // },
             routes: routes,
           );
         },

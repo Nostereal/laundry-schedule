@@ -108,30 +108,30 @@ class _AuthPageState extends State<AuthPage> {
       return resp.sessionId;
     });
   }
-
-  Future<void> storeUserId(String userId) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(prefsUserIdKey, userId);
-  }
 }
 
 const String prefsUserIdKey = 'userId';
+
+Future<void> storeUserId(String? userId) async {
+  final prefs = await SharedPreferences.getInstance();
+  if (userId == null) {
+    prefs.remove(prefsUserIdKey);
+  } else {
+    prefs.setString(prefsUserIdKey, userId);
+  }
+}
 
 Future<String?> getUserId() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString(prefsUserIdKey);
 }
 
-void requireAuth(
-  BuildContext context, {
-  Function(Success)? onAuthorized,
-  Function()? onNonAuthorized,
-}) {
-  getUserId().then((userId) {
+Future<AuthResult> requireAuth(BuildContext context) {
+  return getUserId().then((userId) async {
     if (userId != null) {
-      onAuthorized?.call(Success(userId));
+      return Success(userId);
     } else {
-      showModalBottomSheet(
+      return await showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -143,9 +143,9 @@ void requireAuth(
       ).then(
         (userId) {
           if (userId != null) {
-            onAuthorized?.call(Success(userId));
+            return Success(userId);
           } else {
-            onNonAuthorized?.call();
+            return Failure();
           }
         },
       );

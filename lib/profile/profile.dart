@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:washing_schedule/auth/auth.dart';
 import 'package:washing_schedule/design_system/list_item.dart';
 import 'package:washing_schedule/home/app_bar_provider.dart';
 import 'package:washing_schedule/home/home.dart';
 import 'package:washing_schedule/mocked_data/bookings.dart';
+import 'package:washing_schedule/routing/routing.dart';
 import 'package:washing_schedule/settings/settings.dart';
 
 import 'my_bookings.dart';
@@ -33,20 +37,33 @@ class ProfilePage extends StatefulWidget implements AppBarProvider {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // late Future<String?> futureUserId;
   late Future<ProfileResponse> futureProfileData;
 
   @override
   void initState() {
     super.initState();
-    // todo: replace with profile info
-    // futureUserId = Future.delayed(const Duration(milliseconds: 400))
-    //     .then((_) => getUserId());
-
     futureProfileData = Future.delayed(const Duration(milliseconds: 400))
         .then((_) => getUserId())
-        .then((sessionId) =>
-            getProfileInfo(sessionId!) /*todo: handle nullable sessionId*/);
+        .then((sessionId) async {
+      if (sessionId == null) {
+        return await requireAuth(context).then(
+          (authResult) {
+            if (authResult is Success) {
+              return getProfileInfo(authResult.userId);
+            } else {
+              goHome(context);
+              throw Exception("Auth didn't succeed");
+            }
+          },
+        );
+      } else {
+        return getProfileInfo(sessionId);
+      }
+    });
+  }
+
+  goHome(BuildContext context) {
+    Phoenix.rebirth(context);
   }
 
   @override
@@ -58,6 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final textBodyStyle = Theme.of(context).textTheme.bodyText1;
+            var data = snapshot.data!;
             return Column(
               children: [
                 Expanded(
@@ -77,14 +95,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         ListItem(
                           paddingHorizontal: horizontalPadding,
                           leftItem: const Icon(Icons.person_outlined),
-                          rightItem: Text(snapshot.data!.fullName,
-                              style: textBodyStyle),
+                          rightItem: Text(data.fullName, style: textBodyStyle),
                         ),
                         ListItem(
                           paddingHorizontal: horizontalPadding,
                           leftItem: const Icon(Icons.house_outlined),
                           rightItem: Text(
-                            snapshot.data!.hostel,
+                            data.hostel,
                             style: textBodyStyle,
                           ),
                         ),
@@ -92,36 +109,45 @@ class _ProfilePageState extends State<ProfilePage> {
                           paddingHorizontal: horizontalPadding,
                           leftItem: const Icon(Icons.bed_outlined),
                           rightItem: Text(
-                            snapshot.data!.room,
+                            data.room,
                             style: textBodyStyle,
                           ),
                         ),
+                        const SizedBox(height: 16),
                         MyBookingsList(
-                          margin: const EdgeInsets.only(
-                              left: horizontalPadding,
-                              right: horizontalPadding,
-                              top: 16),
-                          ownedBookings: snapshot.data!.bookings,
+                          ownedBookings: data.bookings,
+                          onBookingDeleted: (booking) {
+                            setState(() {
+                              futureProfileData = Future.value(
+                                ProfileResponse(
+                                  fullName: data.fullName,
+                                  hostel: data.hostel,
+                                  room: data.room,
+                                  bookings: data.bookings
+                                      .where((e) => e != booking)
+                                      .toList(),
+                                ),
+                              );
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 24),
+                        Center(
+                          child: OutlinedButton(
+                              onPressed: () {
+                                storeUserId(null);
+                                goHome(context);
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                child: Text("Log out"),
+                              )),
                         ),
                       ],
                     ),
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(
-                //       vertical: 16.0, horizontal: horizontalPadding),
-                //   child: ElevatedButton(
-                //     onPressed: () {},
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: const [
-                //         Icon(Icons.schedule_outlined),
-                //         SizedBox(width: 4),
-                //         Text('Мои записи'),
-                //       ],
-                //     ),
-                //   ),
-                // )
               ],
             );
           } else if (snapshot.hasError) {

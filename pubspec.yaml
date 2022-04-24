@@ -27,6 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  flutter_phoenix: 1.0.0
   intl: 0.17.0
   scrollable_positioned_list: 0.2.2
   collection: 1.15.0
