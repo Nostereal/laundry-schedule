@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:washing_schedule/auth/auth.dart';
@@ -7,8 +5,8 @@ import 'package:washing_schedule/design_system/list_item.dart';
 import 'package:washing_schedule/home/app_bar_provider.dart';
 import 'package:washing_schedule/home/home.dart';
 import 'package:washing_schedule/mocked_data/bookings.dart';
-import 'package:washing_schedule/routing/routing.dart';
 import 'package:washing_schedule/settings/settings.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'my_bookings.dart';
 
@@ -23,7 +21,7 @@ class ProfilePage extends StatefulWidget implements AppBarProvider {
   @override
   AppBar? provideAppBar(BuildContext context) {
     return AppBar(
-      title: const Text('Profile'),
+      title: Text(AppLocalizations.of(context)!.profilePageTitle),
       actions: [
         IconButton(
           icon: const Icon(Icons.settings_outlined),
@@ -138,10 +136,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 storeUserId(null);
                                 goHome(context);
                               },
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
-                                child: Text("Log out"),
+                                child: Text(AppLocalizations.of(context)!.logOutButton),
                               )),
                         ),
                       ],

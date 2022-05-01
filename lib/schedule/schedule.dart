@@ -7,8 +7,10 @@ import 'package:washing_schedule/booking_creation_details/booking_creation_detai
 import 'package:washing_schedule/design_system/theme.dart';
 import 'package:washing_schedule/home/app_bar_provider.dart';
 import 'package:washing_schedule/home/home.dart';
+import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/mocked_data/bookings.dart';
 import 'package:washing_schedule/utils/lists.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SchedulePage extends StatelessWidget implements AppBarProvider {
   const SchedulePage({Key? key}) : super(key: key);
@@ -34,7 +36,7 @@ class SchedulePage extends StatelessWidget implements AppBarProvider {
   @override
   AppBar? provideAppBar(BuildContext context) {
     return AppBar(
-      title: const Text('Laundry schedule'),
+      title: Text(AppLocalizations.of(context)!.schedulePageTitle),
     );
   }
 }
@@ -178,8 +180,8 @@ class _DaySelectorListViewState extends State<DaySelectorListView> {
         scrollDirection: Axis.horizontal,
         itemBuilder: (BuildContext context, int index) {
           final day = _days[index];
-          final String weekday = DateFormat("dd").format(day);
-          final String month = DateFormat("MMM").format(day);
+          final String weekday = DateFormat("dd", L10n.systemLocale).format(day);
+          final String month = DateFormat("MMM", L10n.systemLocale).format(day);
           final isItemSelected = widget.selectedIndex == index;
           final themeColor = Theme.of(context).colorScheme;
           return AnimatedScale(
@@ -390,10 +392,9 @@ class Booking extends StatelessWidget {
 
 class FreeToBookCard extends StatelessWidget {
   const FreeToBookCard(
-      {Key? key, this.title = "Записаться", this.onTap = _defaultOnTap})
+      {Key? key, this.onTap = _defaultOnTap})
       : super(key: key);
 
-  final String title;
   final Function() onTap;
 
   static _defaultOnTap() {}
@@ -411,7 +412,7 @@ class FreeToBookCard extends StatelessWidget {
         ),
       ),
       child: ScheduleCard(
-        title: title,
+        title: AppLocalizations.of(context)!.createBookingButton,
         icon: Icons.add,
         onTap: onTap,
       ),

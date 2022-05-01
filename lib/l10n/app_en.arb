@@ -1,0 +1,25 @@
+{
+  "bottomSheetScheduleLabel": "Schedule",
+  "bottomSheetProfileLabel": "Profile",
+  "schedulePageTitle": "Laundry schedule",
+  "createBookingButton": "Book",
+
+  "bookingDetailsPageTitle": "Booking details",
+  "name": "Name",
+  "date": "Date",
+  "timeBracket": "Time bracket",
+  "submitNewBookingButton": "Create a booking",
+
+  "profilePageTitle": "Profile",
+  "ownedBookingsHeader": "My bookings",
+  "noOwnedBookingsBannerTitle": "No bookings yet",
+  "noOwnedBookingsBannerText": "They'll appear here as soon as you create them\u00A0😉",
+  "logOutButton": "Log out",
+
+
+  "settingsPageTitle": "Settings",
+  "themeSelectorHeader": "Choose a theme",
+  "systemThemeName": "System",
+  "lightThemeName": "Light",
+  "darkThemeName": "Dark"
+}

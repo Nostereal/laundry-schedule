@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:washing_schedule/home/home.dart';
+import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/schedule/schedule.dart';
 import 'package:washing_schedule/utils/routing.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'booking_creation_details_args.dart';
 
 class BookingCreationDetailsRoute extends StatelessWidget {
@@ -16,8 +17,8 @@ class BookingCreationDetailsRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     final BookingCreationDetailsArgs args = extractArgsFrom(context);
 
-    final dateFormat = DateFormat('dd MMMM');
-    final timeFormat = DateFormat('H:mm');
+    final dateFormat = DateFormat('dd MMMM', L10n.systemLocale);
+    final timeFormat = DateFormat('H:mm', L10n.systemLocale);
     final start = args.timeBracket.start;
     final end = args.timeBracket.end;
     final textTheme = Theme.of(context).textTheme;
@@ -26,13 +27,13 @@ class BookingCreationDetailsRoute extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: const Text('Booking details'),
+        title: Text(AppLocalizations.of(context)!.bookingDetailsPageTitle),
       ),
       persistentFooterButtons: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: ElevatedButton(
-            child: const Text("Create booking"),
+            child: Text(AppLocalizations.of(context)!.submitNewBookingButton),
             onPressed: () {
               showTextSnackBar(context, "Типа создаю запись 😐");
             },
@@ -58,7 +59,10 @@ class BookingCreationDetailsRoute extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
-                        child: Text("Name: ", style: textTheme.headline5),
+                        child: Text(
+                          AppLocalizations.of(context)!.name + ': ',
+                          style: textTheme.headline5,
+                        ),
                       ),
                       Text(
                         "${args.user.lastName} ${args.user.firstName}",
@@ -72,7 +76,7 @@ class BookingCreationDetailsRoute extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
                         child: Text(
-                          "Date: ",
+                          AppLocalizations.of(context)!.date + ': ',
                           style: textTheme.headline5,
                         ),
                       ),
@@ -87,8 +91,10 @@ class BookingCreationDetailsRoute extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
-                        child:
-                            Text("Time bracket: ", style: textTheme.headline5),
+                        child: Text(
+                          AppLocalizations.of(context)!.timeBracket + ': ',
+                          style: textTheme.headline5,
+                        ),
                       ),
                       Text(
                         "${timeFormat.format(start)} — ${timeFormat.format(end)}",

@@ -2,13 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:washing_schedule/home/home.dart';
+import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/mocked_data/bookings.dart';
 import 'package:build_context/build_context.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyBookingsList extends StatelessWidget {
-  const MyBookingsList(
-      {Key? key, required this.ownedBookings, this.onBookingDeleted})
-      : super(key: key);
+  const MyBookingsList({
+    Key? key,
+    required this.ownedBookings,
+    this.onBookingDeleted,
+  }) : super(key: key);
 
   final List<TimeBooking> ownedBookings;
   final Function(TimeBooking)? onBookingDeleted;
@@ -24,8 +28,10 @@ class MyBookingsList extends StatelessWidget {
       children: [
         Container(
           margin: insets,
-          child:
-              Text("Мои записи", style: Theme.of(context).textTheme.headline4),
+          child: Text(
+            AppLocalizations.of(context)!.ownedBookingsHeader,
+            style: Theme.of(context).textTheme.headline4,
+          ),
         ),
         const SizedBox(height: 12),
         AnimatedCrossFade(
@@ -62,8 +68,8 @@ class MyBooking extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd MMMM');
-    final timeFormat = DateFormat('H:mm');
+    final dateFormat = DateFormat('dd MMMM', L10n.systemLocale);
+    final timeFormat = DateFormat('H:mm', L10n.systemLocale);
     final start = booking.timeBracket.start;
     final end = booking.timeBracket.end;
     final textTheme = Theme.of(context).textTheme;
@@ -133,12 +139,12 @@ class NoBookingsBanner extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "Пока записей нет",
+                AppLocalizations.of(context)!.noOwnedBookingsBannerTitle,
                 style: context.textTheme.headline5,
               ),
               const SizedBox(height: 8),
               Text(
-                "Они появятся тут, как только ты их создашь\u00A0😉",
+                AppLocalizations.of(context)!.noOwnedBookingsBannerText,
                 style: context.textTheme.bodyText1,
               ),
             ],

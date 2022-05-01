@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:washing_schedule/design_system/theme.dart';
 import 'package:washing_schedule/design_system/theme_notifier.dart';
+import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/profile/profile.dart';
 import 'package:washing_schedule/routing/routing.dart';
 import 'package:washing_schedule/schedule/schedule.dart';
 import 'package:washing_schedule/utils/routing.dart';
 import 'app_bar_provider.dart';
 import 'home_page_args.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 const double horizontalPadding = 20;
 
@@ -37,7 +41,13 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeNotifier>(
         builder: (context, ThemeNotifier themeNotifier, child) {
           return MaterialApp(
-            title: 'Laundry schedule',
+            onGenerateTitle: (context) => AppLocalizations.of(context)!.schedulePageTitle,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: L10n.all,
             themeMode: themeNotifier.themeMode,
             theme: Themes.lightTheme,
             darkTheme: Themes.darkTheme,
@@ -107,14 +117,14 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _bottomBarIndex,
         onTap: onPageChanged,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today_outlined),
-            label: 'Schedule',
+            icon: const Icon(Icons.calendar_today_outlined),
+            label: AppLocalizations.of(context)!.bottomSheetScheduleLabel,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Profile',
+            icon: const Icon(Icons.person_outline),
+            label: AppLocalizations.of(context)!.bottomSheetProfileLabel,
           ),
         ],
       ),

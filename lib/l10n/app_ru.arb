@@ -1,0 +1,25 @@
+{
+  "bottomSheetScheduleLabel": "Расписание",
+  "bottomSheetProfileLabel": "Профиль",
+  "schedulePageTitle": "Расписание",
+  "createBookingButton": "Записаться",
+
+  "bookingDetailsPageTitle": "О записи",
+  "name": "На имя",
+  "date": "Дата",
+  "timeBracket": "Время",
+  "submitNewBookingButton": "Создать запись",
+
+  "profilePageTitle": "Профиль",
+  "ownedBookingsHeader": "Мои записи",
+  "noOwnedBookingsBannerTitle": "Пока записей нет",
+  "noOwnedBookingsBannerText": "Они появятся тут, как только ты их создашь\u00A0😉",
+  "logOutButton": "Выйти",
+
+
+  "settingsPageTitle": "Настройки",
+  "themeSelectorHeader": "Выбери тему",
+  "systemThemeName": "Системная",
+  "lightThemeName": "Светлая",
+  "darkThemeName": "Тёмная"
+}
