@@ -53,8 +53,8 @@ class TimeBracket {
   TimeBracket(this.start, this.end);
 
   TimeBracket.fromJson(Json json)
-      : start = DateTime.parse(json['start']),
-        end = DateTime.parse(json['end']);
+      : start = DateTime.parse(json['start']).toLocal(),
+        end = DateTime.parse(json['end']).toLocal();
 
   Json toJson() => {
     'start': start.toIso8601String(),

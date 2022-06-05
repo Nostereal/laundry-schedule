@@ -22,7 +22,7 @@ class ProfilePage extends StatefulWidget implements AppBarProvider {
   static const routeName = '/profile';
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  ProfilePageState createState() => ProfilePageState();
 
   @override
   AppBar? provideAppBar(BuildContext context) {
@@ -40,7 +40,7 @@ class ProfilePage extends StatefulWidget implements AppBarProvider {
   }
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class ProfilePageState extends State<ProfilePage> {
   late Future<Result<ProfileResponse>> _futureProfileData;
   final ProfileRepository _profileRepository = getIt.get();
   ProfileResponse? _profileResponse;
@@ -180,6 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
   _deleteBooking(ProfileBooking bookingToDelete) async {
     final result = await _profileRepository.deleteBooking(bookingToDelete.id);
     if (result is FailureResult) {
+      if (!mounted) return;
       showTextSnackBar(context, result.error.message);
     } else {
       setState(() {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:washing_schedule/core/models/result.dart';
 import 'package:washing_schedule/core/network/client/http_client.dart';
 import 'package:washing_schedule/di/application_module.dart';
@@ -15,7 +17,10 @@ class ProfileApi {
   }
 
   Future<Result<Object?>> deleteBooking(String bookingId) async {
-    final response = await client.delete("1/booking");
+    Map body = {
+      'id': bookingId,
+    };
+    final response = await client.delete("1/booking", body: json.encode(body));
     return parseResult(
       response.body,
       (json) => null,

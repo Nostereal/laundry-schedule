@@ -61,6 +61,9 @@ class _AuthPageState extends State<AuthPage> {
                   FormInput(
                     controller: passwordController,
                     hint: 'Password',
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Field must not be empty';

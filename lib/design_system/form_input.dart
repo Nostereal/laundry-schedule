@@ -7,12 +7,18 @@ class FormInput extends StatelessWidget {
     this.hint,
     this.controller,
     this.validator,
+    this.obscureText = false,
+    this.enableSuggestions = true,
+    this.autocorrect = false,
   }) : super(key: key);
 
   final String? initialValue;
   final String? hint;
   final String? Function(String?)? validator;
   final TextEditingController? controller;
+  final bool obscureText;
+  final bool enableSuggestions;
+  final bool autocorrect;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +35,9 @@ class FormInput extends StatelessWidget {
         decoration: InputDecoration.collapsed(hintText: hint),
         initialValue: initialValue,
         validator: validator,
+        obscureText: obscureText,
+        enableSuggestions: enableSuggestions,
+        autocorrect: autocorrect,
       ),
     );
   }
