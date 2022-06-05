@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:washing_schedule/core/models/result.dart';
 
 const bookingTimeLimit = Duration(minutes: 45);
 late Random random = Random();
@@ -50,6 +51,13 @@ class TimeBracket {
   final DateTime end;
 
   TimeBracket(this.start, this.end);
+
+  TimeBracket.fromJson(Json json)
+      : start = DateTime.parse(json['start']),
+        end = DateTime.parse(json['end']);
+
+  Json toJson() => {
+    'start': start.toIso8601String(),
+    'end': end.toIso8601String(),
+  };
 }
-
-

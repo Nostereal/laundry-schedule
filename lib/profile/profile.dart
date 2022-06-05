@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:washing_schedule/auth/auth.dart';
+import 'package:washing_schedule/core/models/result.dart';
+import 'package:washing_schedule/core/models/typed_error.dart';
 import 'package:washing_schedule/design_system/list_item.dart';
+import 'package:washing_schedule/di/application_module.dart';
 import 'package:washing_schedule/home/app_bar_provider.dart';
 import 'package:washing_schedule/home/home.dart';
-import 'package:washing_schedule/mocked_data/bookings.dart';
+import 'package:washing_schedule/profile/models/profile_booking.dart';
+import 'package:washing_schedule/profile/models/profile_response.dart';
+import 'package:washing_schedule/profile/profile_repository.dart';
+import 'package:washing_schedule/schedule/schedule.dart';
 import 'package:washing_schedule/settings/settings.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -35,19 +41,19 @@ class ProfilePage extends StatefulWidget implements AppBarProvider {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late Future<ProfileResponse> futureProfileData;
+  late Future<Result<ProfileResponse>> _futureProfileData;
+  final ProfileRepository _profileRepository = getIt.get();
+  ProfileResponse? _profileResponse;
 
   @override
   void initState() {
     super.initState();
-    futureProfileData = Future.delayed(const Duration(milliseconds: 400))
-        .then((_) => getUserId())
-        .then((sessionId) async {
-      if (sessionId == null) {
+    _futureProfileData = getUserId().then((userId) async {
+      if (userId == null) {
         return await requireAuth(context).then(
           (authResult) {
             if (authResult is Success) {
-              return getProfileInfo(authResult.userId);
+              return _profileRepository.getProfileInfo(authResult.userId);
             } else {
               goHome(context);
               throw Exception("Auth didn't succeed");
@@ -55,9 +61,28 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         );
       } else {
-        return getProfileInfo(sessionId);
+        return _profileRepository.getProfileInfo(userId);
       }
     });
+
+    // futureProfileData = Future.delayed(const Duration(milliseconds: 400))
+    //     .then((_) => getUserId())
+    //     .then((sessionId) async {
+    //   if (sessionId == null) {
+    //     return await requireAuth(context).then(
+    //       (authResult) {
+    //         if (authResult is Success) {
+    //           return getProfileInfo(authResult.userId);
+    //         } else {
+    //           goHome(context);
+    //           throw Exception("Auth didn't succeed");
+    //         }
+    //       },
+    //     );
+    //   } else {
+    //     return getProfileInfo(sessionId);
+    //   }
+    // });
   }
 
   goHome(BuildContext context) {
@@ -68,12 +93,19 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 28),
-      child: FutureBuilder<ProfileResponse>(
-        future: futureProfileData,
+      child: FutureBuilder(
+        future: _futureProfileData,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasErrorOrFailureResult) {
+            final typedError = snapshot.typedError;
+            // todo: create beautiful error screen
+            return Text(typedError.message);
+          } else if (snapshot.hasSuccessResult) {
             final textBodyStyle = Theme.of(context).textTheme.bodyText1;
-            var data = snapshot.data!;
+            final ProfileResponse data = snapshot.successData();
+            _profileResponse = data;
+            final profileInfo = data.profileInfo;
+            final bookings = data.bookings;
             return Column(
               children: [
                 Expanded(
@@ -93,13 +125,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         ListItem(
                           paddingHorizontal: horizontalPadding,
                           leftItem: const Icon(Icons.person_outlined),
-                          rightItem: Text(data.fullName, style: textBodyStyle),
+                          rightItem:
+                              Text(profileInfo.fullName, style: textBodyStyle),
                         ),
                         ListItem(
                           paddingHorizontal: horizontalPadding,
                           leftItem: const Icon(Icons.house_outlined),
                           rightItem: Text(
-                            data.hostel,
+                            profileInfo.dorm,
                             style: textBodyStyle,
                           ),
                         ),
@@ -107,27 +140,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           paddingHorizontal: horizontalPadding,
                           leftItem: const Icon(Icons.bed_outlined),
                           rightItem: Text(
-                            data.room,
+                            profileInfo.livingRoom,
                             style: textBodyStyle,
                           ),
                         ),
                         const SizedBox(height: 16),
                         MyBookingsList(
-                          ownedBookings: data.bookings,
-                          onBookingDeleted: (booking) {
-                            setState(() {
-                              futureProfileData = Future.value(
-                                ProfileResponse(
-                                  fullName: data.fullName,
-                                  hostel: data.hostel,
-                                  room: data.room,
-                                  bookings: data.bookings
-                                      .where((e) => e != booking)
-                                      .toList(),
-                                ),
-                              );
-                            });
-                          },
+                          ownedBookings: bookings,
+                          onBookingDeleted: _deleteBooking,
                         ),
                         const SizedBox(height: 24),
                         Center(
@@ -139,7 +159,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
-                                child: Text(AppLocalizations.of(context)!.logOutButton),
+                                child: Text(
+                                    AppLocalizations.of(context)!.logOutButton),
                               )),
                         ),
                       ],
@@ -148,37 +169,44 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             );
-          } else if (snapshot.hasError) {
-            return const Text('ERROOOOOOOR!!!!');
           }
+
           return const Center(child: CircularProgressIndicator());
         },
       ),
     );
   }
+
+  _deleteBooking(ProfileBooking bookingToDelete) async {
+    final result = await _profileRepository.deleteBooking(bookingToDelete.id);
+    if (result is FailureResult) {
+      showTextSnackBar(context, result.error.message);
+    } else {
+      setState(() {
+        _futureProfileData = Future.value(
+          SuccessResult(
+            _profileResponse!.copyWith(
+              bookings: _profileResponse!.bookings
+                  .where((b) => b.id != bookingToDelete.id)
+                  .toList(),
+            ),
+          ),
+        );
+      });
+    }
+  }
 }
 
-class ProfileResponse {
-  final String fullName;
-  final String hostel;
-  final String room;
-  final List<TimeBooking> bookings;
+extension on AsyncSnapshot {
+  T successData<T>() => (data! as SuccessResult<T>).data;
 
-  const ProfileResponse({
-    required this.fullName,
-    required this.hostel,
-    required this.room,
-    required this.bookings,
-  });
-}
+  bool get hasSuccessResult => hasData && data is SuccessResult;
 
-Future<ProfileResponse> getProfileInfo(String sessionId) async {
-  return Future.value(
-    ProfileResponse(
-      fullName: 'Михалевич Тёмочка',
-      hostel: 'Общежитие №4',
-      room: 'Комната №127',
-      bookings: generateBookings(count: 3),
-    ),
-  );
+  bool get hasFailureData => hasData && data is FailureResult;
+
+  bool get hasErrorOrFailureResult => hasError || hasFailureData;
+
+  TypedError get typedError => hasFailureData
+      ? (data as FailureResult).error
+      : Unknown(defaultErrorMessage);
 }

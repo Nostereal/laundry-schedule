@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.14.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -27,6 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  get_it: 7.2.0
   flutter_phoenix: 1.0.0
   intl: 0.17.0
   scrollable_positioned_list: 0.2.2
@@ -34,7 +35,6 @@ dependencies:
   shared_preferences: 2.0.12
   http: 0.13.4
   windows1251: 0.0.3
-  dio: 4.0.4
   build_context: 3.0.0
   provider: 6.0.2
   flutter:

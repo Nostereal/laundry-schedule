@@ -6,6 +6,7 @@ import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/mocked_data/bookings.dart';
 import 'package:build_context/build_context.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:washing_schedule/profile/models/profile_booking.dart';
 
 class MyBookingsList extends StatelessWidget {
   const MyBookingsList({
@@ -14,8 +15,8 @@ class MyBookingsList extends StatelessWidget {
     this.onBookingDeleted,
   }) : super(key: key);
 
-  final List<TimeBooking> ownedBookings;
-  final Function(TimeBooking)? onBookingDeleted;
+  final List<ProfileBooking> ownedBookings;
+  final Function(ProfileBooking)? onBookingDeleted;
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +64,8 @@ class MyBooking extends StatelessWidget {
   const MyBooking({Key? key, required this.booking, this.onBookingDeleted})
       : super(key: key);
 
-  final TimeBooking booking;
-  final Function(TimeBooking)? onBookingDeleted;
+  final ProfileBooking booking;
+  final Function(ProfileBooking)? onBookingDeleted;
 
   @override
   Widget build(BuildContext context) {
