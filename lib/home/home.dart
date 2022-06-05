@@ -5,6 +5,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:washing_schedule/design_system/theme.dart';
 import 'package:washing_schedule/design_system/theme_notifier.dart';
+import 'package:washing_schedule/di/application_module.dart';
 import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/profile/profile.dart';
 import 'package:washing_schedule/routing/routing.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 const double horizontalPadding = 20;
 
 void main() {
+  bindDependencies();
   runApp(
     Phoenix(child: const MyApp()),
   );

@@ -11,9 +11,9 @@ class ProfileResponse {
   );
 
   ProfileResponse.fromJson(Json json)
-      : profileInfo = json['profileInfo'],
+      : profileInfo = ProfileInfo.fromJson(json['profileInfo']),
         bookings =
-            json['bookings'].map((v) => ProfileBooking.fromJson(v)).toList();
+            json['bookings'].map<ProfileBooking>((v) => ProfileBooking.fromJson(v)).toList();
 
   ProfileResponse copyWith({
     ProfileInfo? profileInfo,

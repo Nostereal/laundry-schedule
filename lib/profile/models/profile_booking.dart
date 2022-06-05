@@ -9,7 +9,7 @@ class ProfileBooking {
 
   ProfileBooking.fromJson(Json json)
       : id = json['id'],
-        timeBracket = TimeBracket.fromJson(json);
+        timeBracket = TimeBracket.fromJson(json['timeBracket']);
 
 
   Json toJson() => {

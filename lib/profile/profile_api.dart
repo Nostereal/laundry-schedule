@@ -7,7 +7,7 @@ class ProfileApi {
   final HttpClient client = getIt.get();
 
   Future<Result<ProfileResponse>> getProfileInfo(int userId) async {
-    final response = await client.get("1/profile");
+    final response = await client.get("1/profile", queryParams: { 'userId': [userId.toString()] });
     return parseResult(
       response.body,
       (json) => ProfileResponse.fromJson(json),
