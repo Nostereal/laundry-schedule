@@ -198,7 +198,7 @@ class ProfilePageState extends State<ProfilePage> {
   }
 }
 
-extension on AsyncSnapshot {
+extension Results on AsyncSnapshot {
   T successData<T>() => (data! as SuccessResult<T>).data;
 
   bool get hasSuccessResult => hasData && data is SuccessResult;

@@ -17,10 +17,10 @@ class BookingCreationDetailsRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     final BookingCreationDetailsArgs args = extractArgsFrom(context);
 
-    final dateFormat = DateFormat('dd MMMM', L10n.systemLocale);
-    final timeFormat = DateFormat('H:mm', L10n.systemLocale);
-    final start = args.timeBracket.start;
-    final end = args.timeBracket.end;
+    // final dateFormat = DateFormat('dd MMMM', L10n.systemLocale);
+    // final timeFormat = DateFormat('H:mm', L10n.systemLocale);
+    // final start = args.sessionNum.start;
+    // final end = args.sessionNum.end;
     final textTheme = Theme.of(context).textTheme;
     const spacingRow =
         TableRow(children: [SizedBox(height: 8), SizedBox(height: 8)]);
@@ -60,7 +60,7 @@ class BookingCreationDetailsRoute extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
                         child: Text(
-                          AppLocalizations.of(context)!.name + ': ',
+                          '${AppLocalizations.of(context)!.name}: ',
                           style: textTheme.headline5,
                         ),
                       ),
@@ -76,12 +76,13 @@ class BookingCreationDetailsRoute extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
                         child: Text(
-                          AppLocalizations.of(context)!.date + ': ',
+                          '${AppLocalizations.of(context)!.date}: ',
                           style: textTheme.headline5,
                         ),
                       ),
                       Text(
-                        dateFormat.format(start),
+                        // dateFormat.format(start),
+                        'todo: display date from server',
                         style: textTheme.bodyText1,
                       ),
                     ],
@@ -92,12 +93,13 @@ class BookingCreationDetailsRoute extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(right: 6),
                         child: Text(
-                          AppLocalizations.of(context)!.timeBracket + ': ',
+                          '${AppLocalizations.of(context)!.timeBracket}: ',
                           style: textTheme.headline5,
                         ),
                       ),
                       Text(
-                        "${timeFormat.format(start)} — ${timeFormat.format(end)}",
+                        // "${timeFormat.format(start)} — ${timeFormat.format(end)}",
+                        'todo: display time brackets from server; btw, session num = ${args.sessionNum}',
                         style: textTheme.bodyText1,
                       ),
                     ],

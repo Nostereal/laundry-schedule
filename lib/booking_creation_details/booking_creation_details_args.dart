@@ -1,8 +1,8 @@
 import 'package:washing_schedule/mocked_data/bookings.dart';
 
 class BookingCreationDetailsArgs {
-  final TimeBracket timeBracket;
+  final int sessionNum;
   final User user;
 
-  BookingCreationDetailsArgs(this.timeBracket, this.user);
+  BookingCreationDetailsArgs(this.sessionNum, this.user);
 }
