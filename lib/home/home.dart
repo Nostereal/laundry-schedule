@@ -10,6 +10,7 @@ import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/profile/profile.dart';
 import 'package:washing_schedule/routing/routing.dart';
 import 'package:washing_schedule/schedule/schedule.dart';
+import 'package:washing_schedule/utils/cast.dart';
 import 'package:washing_schedule/utils/routing.dart';
 import 'app_bar_provider.dart';
 import 'home_page_args.dart';
@@ -103,13 +104,13 @@ class _HomePageState extends State<HomePage> {
           PageController(initialPage: args.bottomNavIndex ?? 0);
     });
 
-    const List<AppBarProvider> pages = [
+    const List<Widget> pages = [
       SchedulePage(),
       ProfilePage(),
     ];
 
     return Scaffold(
-      appBar: pages[_bottomBarIndex].provideAppBar(context),
+      appBar: cast<AppBarProvider>(pages[_bottomBarIndex])?.provideAppBar(context),
       body: PageView(
         restorationId: 'homePageView',
         physics: const NeverScrollableScrollPhysics(),

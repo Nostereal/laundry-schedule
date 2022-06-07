@@ -49,6 +49,7 @@ class Themes {
       ),
       cardColor: primaryLight,
       bottomSheetTheme: const BottomSheetThemeData(shape: bottomSheetShape),
+      dividerColor: Colors.grey[500],
     );
   }
 

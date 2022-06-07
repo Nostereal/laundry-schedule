@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class AppBarProvider implements Widget {
+mixin AppBarProvider {
 
   AppBar? provideAppBar(BuildContext context) {
     return null;

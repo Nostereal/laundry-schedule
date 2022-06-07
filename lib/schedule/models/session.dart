@@ -59,12 +59,12 @@ class LaunchSession extends Session {
   @override
   final String startTime;
 
-  final AlertBanner? banner;
+  final AlertBannerModel? banner;
 
   LaunchSession.fromJson(this.type, Json json)
       : startTime = json['startTime'],
         banner = json['banner'] != null
-            ? AlertBanner.fromJson(json['banner'])
+            ? AlertBannerModel.fromJson(json['banner'])
             : null;
 }
 

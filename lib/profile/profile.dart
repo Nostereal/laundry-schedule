@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:washing_schedule/auth/auth.dart';
 import 'package:washing_schedule/core/models/result.dart';
 import 'package:washing_schedule/core/models/typed_error.dart';
@@ -9,14 +10,13 @@ import 'package:washing_schedule/home/app_bar_provider.dart';
 import 'package:washing_schedule/home/home.dart';
 import 'package:washing_schedule/profile/models/profile_booking.dart';
 import 'package:washing_schedule/profile/models/profile_response.dart';
+import 'package:washing_schedule/profile/my_bookings.dart';
 import 'package:washing_schedule/profile/profile_repository.dart';
 import 'package:washing_schedule/schedule/schedule.dart';
 import 'package:washing_schedule/settings/settings.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'my_bookings.dart';
-
-class ProfilePage extends StatefulWidget implements AppBarProvider {
+class ProfilePage extends StatefulWidget with AppBarProvider {
   const ProfilePage({Key? key}) : super(key: key);
 
   static const routeName = '/profile';
@@ -64,25 +64,6 @@ class ProfilePageState extends State<ProfilePage> {
         return _profileRepository.getProfileInfo(userId);
       }
     });
-
-    // futureProfileData = Future.delayed(const Duration(milliseconds: 400))
-    //     .then((_) => getUserId())
-    //     .then((sessionId) async {
-    //   if (sessionId == null) {
-    //     return await requireAuth(context).then(
-    //       (authResult) {
-    //         if (authResult is Success) {
-    //           return getProfileInfo(authResult.userId);
-    //         } else {
-    //           goHome(context);
-    //           throw Exception("Auth didn't succeed");
-    //         }
-    //       },
-    //     );
-    //   } else {
-    //     return getProfileInfo(sessionId);
-    //   }
-    // });
   }
 
   goHome(BuildContext context) {
@@ -113,13 +94,10 @@ class ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(88),
-                            ),
-                            child: const Icon(Icons.catching_pokemon, size: 88),
-                          ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: horizontalPadding),
+                          child: AvatarImage(url: profileInfo.avatar),
                         ),
                         const SizedBox(height: 16),
                         ListItem(
@@ -195,6 +173,42 @@ class ProfilePageState extends State<ProfilePage> {
         );
       });
     }
+  }
+}
+
+class AvatarImage extends StatelessWidget {
+  const AvatarImage({Key? key, required this.url}) : super(key: key);
+
+  final String? url;
+  static const double _iconSize = 88;
+
+  @override
+  Widget build(BuildContext context) {
+    const pokemonIcon = Icon(Icons.catching_pokemon, size: _iconSize);
+    final image = url == null
+        ? pokemonIcon
+        : Stack(
+            fit: StackFit.passthrough,
+            children: [
+              pokemonIcon,
+              FadeInImage.memoryNetwork(
+                width: _iconSize,
+                height: _iconSize,
+                image: url!,
+                placeholder: kTransparentImage,
+                fadeInDuration: const Duration(milliseconds: 200),
+                fadeOutDuration: const Duration(milliseconds: 200),
+              )
+            ],
+          );
+
+    return Container(
+        decoration: ShapeDecoration(
+          shape: CircleBorder(
+            side: BorderSide(color: Colors.grey[600]!, width: 1.2),
+          ),
+        ),
+        child: ClipOval(child: image));
   }
 }
 

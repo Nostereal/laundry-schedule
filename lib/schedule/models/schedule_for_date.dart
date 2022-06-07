@@ -5,7 +5,7 @@ import 'package:washing_schedule/schedule/models/session.dart';
 
 @immutable
 class ScheduleForDate {
-  final AlertBanner? alert;
+  final AlertBannerModel? alert;
   final int sessionSeconds;
   final DateTime date;
   final List<Session> sessions;
@@ -18,13 +18,13 @@ class ScheduleForDate {
   });
 
   ScheduleForDate.fromJson(Json json) :
-    alert = json['alert'] != null ? AlertBanner.fromJson(json['alert']) : null,
+    alert = json['alert'] != null ? AlertBannerModel.fromJson(json['alert']) : null,
     sessionSeconds = json['sessionSeconds'],
     date = DateTime.parse(json['date']).toLocal(),
     sessions = json['sessions'].map<Session>((v) => Session.fromJson(v)).toList();
 
   ScheduleForDate copyWith({
-    AlertBanner? alert,
+    AlertBannerModel? alert,
     int? sessionSeconds,
     DateTime? date,
     List<Session>? sessions,

@@ -5,6 +5,7 @@ import 'package:washing_schedule/auth/auth.dart';
 import 'package:washing_schedule/booking_creation_details/booking_creation_details.dart';
 import 'package:washing_schedule/booking_creation_details/booking_creation_details_args.dart';
 import 'package:washing_schedule/core/models/result.dart';
+import 'package:washing_schedule/design_system/alert_banner.dart';
 import 'package:washing_schedule/design_system/theme.dart';
 import 'package:washing_schedule/di/application_module.dart';
 import 'package:washing_schedule/home/app_bar_provider.dart';
@@ -19,13 +20,13 @@ import 'package:washing_schedule/schedule/models/session.dart';
 import 'package:washing_schedule/schedule/models/session_type.dart';
 import 'package:washing_schedule/schedule/schedule_repository.dart';
 
-class SchedulePage extends StatelessWidget implements AppBarProvider {
+class SchedulePage extends StatelessWidget with AppBarProvider {
   const SchedulePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 24),
+      padding: const EdgeInsets.only(top: 20),
       child: Column(
         // Invoke "debug painting" (press "p" in the console, choose the
         // "Toggle Debug Paint" action from the Flutter Inspector in Android
@@ -56,13 +57,13 @@ class CalendarPagerView extends StatefulWidget {
 }
 
 class CalendarPagerViewState extends State<CalendarPagerView> {
-  static const int _initialIndex = 2;
+  static const int _initialIndex = 0;
   int selectedIndex = _initialIndex;
   final ItemScrollController itemScrollController = ItemScrollController();
   final PageController pageViewController =
-  PageController(initialPage: _initialIndex);
+      PageController(initialPage: _initialIndex);
   final double selectedItemAlignment =
-  0.393; // todo: calculate from display width and card size
+      0.393; // todo: calculate from display width and card size
   final Duration _duration = const Duration(milliseconds: 300);
 
   bool _isPageAnimating = false;
@@ -114,39 +115,37 @@ class CalendarPagerViewState extends State<CalendarPagerView> {
                       _isPageAnimating = true;
                       pageViewController
                           .animateToPage(
-                        index,
-                        duration: _duration * 2,
-                        curve: Curves.easeInOut,
-                      )
+                            index,
+                            duration: _duration * 2,
+                            curve: Curves.easeInOut,
+                          )
                           .then((_) => {_isPageAnimating = false});
                     },
                   ),
                 ),
               ),
               Expanded(
-                child: Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: horizontalPadding),
-                  child: DaysPageView(
-                    dates: dates.dates,
-                    controller: pageViewController,
-                    onPageChanged: (i) {
-                      if (_isPageAnimating) return;
+                child: DaysPageView(
+                  dates: dates.dates,
+                  controller: pageViewController,
+                  onPageChanged: (i) {
+                    if (_isPageAnimating) return;
 
-                      onPageChanged(i);
-                      itemScrollController.scrollTo(
-                        index: i,
-                        duration: _duration,
-                        alignment: selectedItemAlignment,
-                      );
-                    },
-                  ),
+                    onPageChanged(i);
+                    itemScrollController.scrollTo(
+                      index: i,
+                      duration: _duration,
+                      alignment: selectedItemAlignment,
+                    );
+                  },
                 ),
               )
             ],
           );
         }
-        return const CircularProgressIndicator(); // todo: skeletons like day selector view
+        return const Center(
+            child:
+                CircularProgressIndicator()); // todo: skeletons like day selector view
       },
     );
   }
@@ -173,11 +172,16 @@ class DaysPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
+      allowImplicitScrolling: true,
       itemCount: dates.length,
       controller: controller,
       onPageChanged: onPageChanged,
       itemBuilder: (BuildContext context, int index) {
-        return DayList(date: dates[index]);
+        final date = dates[index];
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
+          child: DayList(key: ValueKey(date), date: date),
+        );
       },
     );
   }
@@ -193,11 +197,6 @@ class DayList extends StatefulWidget {
 }
 
 class DayListState extends State<DayList> {
-  List<Widget> preWidgets = /*[const Divider(height: 1)]*/ [];
-  List<Widget> widgets = [];
-  List<Widget> postWidgets = /*[const Divider(height: 1)]*/ [];
-  static const int _maxBookings = 3;
-
   final ScheduleRepository _repository = getIt.get();
 
   late Future<Result<ScheduleForDate>> _futureScheduleForDate;
@@ -206,78 +205,55 @@ class DayListState extends State<DayList> {
   void initState() {
     super.initState();
     _futureScheduleForDate = _repository.getScheduleForDate(widget.date);
-
-    // widgets = windowed(bookings, _maxBookings).map((books) {
-    //   // todo: pass timeBracket separately from bookings for empty bracket case
-    //   List<Widget> bookings = books
-    //       // ignore: unnecessary_cast
-    //       .map((e) => Booking(
-    //             booking: e,
-    //             onTap: (b) {
-    //               showTextSnackBar(context,
-    //                   "Should open details about booking by ${b.owner}");
-    //             },
-    //           ) as Widget)
-    //       .toList();
-    //
-    //   if (bookings.length < _maxBookings) {
-    //     bookings.add(
-    //       FreeToBookCard(
-    //         onTap: () {
-    //           requireAuth(
-    //             context,
-    //           ).then((authResult) {
-    //             if (authResult is Success) {
-    //               Navigator.pushNamed(
-    //                 context,
-    //                 BookingCreationDetailsRoute.routeName,
-    //                 arguments:
-    //                     BookingCreationDetailsArgs(books.first.timeBracket, me),
-    //               );
-    //             } else {
-    //               showTextSnackBar(context, 'Authorization failed 😔');
-    //             }
-    //           });
-    //         },
-    //       ),
-    //     );
-    //   }
-    //   return TimeBracketBookings(children: bookings);
-    // }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: _futureScheduleForDate,
-      builder: (BuildContext context,
-          AsyncSnapshot<Result<ScheduleForDate>> snapshot,) {
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<Result<ScheduleForDate>> snapshot,
+      ) {
         if (snapshot.hasErrorOrFailureResult) {
           // todo: create beautiful error screen
           return Text(snapshot.typedError.message);
         } else if (snapshot.hasSuccessResult) {
           final ScheduleForDate scheduleForDate = snapshot.successData();
+          final alert = scheduleForDate.alert;
           final sessions = scheduleForDate.sessions;
-          return ListView.separated(
-            separatorBuilder: (BuildContext context, int index) {
-              return TimeLineDivider(time: sessions[index + 1].startTime);
-            },
-            itemCount: sessions.length,
-            itemBuilder: (BuildContext context, int index) {
-              final session = sessions[index];
-              final sessionWidget = _getWidgetForSession(session);
-              if (index == 0) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TimeLineDivider(time: session.startTime),
-                    sessionWidget,
-                  ],
-                );
-              }
+          return Column(
+            children: [
+              if (alert != null)
+                AlertBanner(
+                  title: alert.title,
+                  body: alert.body,
+                  margin: EdgeInsets.zero,
+                ),
+              Expanded(
+                child: ListView.separated(
+                  separatorBuilder: (BuildContext context, int index) {
+                    return TimeLineDivider(time: sessions[index + 1].startTime);
+                  },
+                  itemCount: sessions.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final session = sessions[index];
+                    final sessionWidget = _getWidgetForSession(session);
+                    if (index == 0) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TimeLineDivider(time: session.startTime),
+                          sessionWidget,
+                        ],
+                      );
+                    }
 
-              return sessionWidget;
-            },
+                    return sessionWidget;
+                  },
+                ),
+              ),
+            ],
           );
         }
         return const Center(child: CircularProgressIndicator());
@@ -320,8 +296,10 @@ class DayListState extends State<DayList> {
                 Navigator.pushNamed(
                   context,
                   BookingCreationDetailsRoute.routeName,
-                  arguments:
-                  BookingCreationDetailsArgs(session.sessionNum, me), // todo: pass user info
+                  arguments: BookingCreationDetailsArgs(
+                    session.sessionNum,
+                    me,
+                  ), // todo: pass user info
                 );
               } else {
                 showTextSnackBar(context, 'Authorization failed 😔');
@@ -336,8 +314,14 @@ class DayListState extends State<DayList> {
   }
 
   Widget _launchSessionWidget(LaunchSession session) {
-    // todo: create banner widget
-    return session.banner == null ? const Text('here is info about launch time :)') : const SizedBox.shrink();
+    final banner = session.banner;
+    return banner != null
+        ? AlertBanner(
+            title: banner.title,
+            body: banner.body,
+            margin: const EdgeInsets.symmetric(vertical: 8),
+          )
+        : const SizedBox.shrink();
   }
 }
 
@@ -387,9 +371,7 @@ class FreeToBookCard extends StatelessWidget {
     return Theme(
       data: theme.copyWith(
         cardTheme: theme.cardTheme.copyWith(
-          color: Theme
-              .of(context)
-              .canvasColor,
+          color: Theme.of(context).canvasColor,
           shape: Themes.cardShape.copyWith(
             side: BorderSide(color: theme.cardTheme.color!, width: 1.5),
           ),
@@ -452,9 +434,7 @@ class TimeLineDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = this.color ?? Theme
-        .of(context)
-        .dividerColor;
+    final color = this.color ?? Theme.of(context).dividerColor;
     return Row(
       children: [
         Text(
