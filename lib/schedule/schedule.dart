@@ -6,6 +6,7 @@ import 'package:washing_schedule/booking_creation_details/booking_creation_detai
 import 'package:washing_schedule/booking_creation_details/booking_creation_details_args.dart';
 import 'package:washing_schedule/core/models/result.dart';
 import 'package:washing_schedule/design_system/alert_banner.dart';
+import 'package:washing_schedule/design_system/content_placeholder.dart';
 import 'package:washing_schedule/design_system/theme.dart';
 import 'package:washing_schedule/di/application_module.dart';
 import 'package:washing_schedule/home/app_bar_provider.dart';
@@ -85,8 +86,17 @@ class CalendarPagerViewState extends State<CalendarPagerView> {
           AsyncSnapshot<Result<AvailableDates>> snapshot) {
         if (snapshot.hasErrorOrFailureResult) {
           final typedError = snapshot.typedError;
-          // todo: create beautiful error screen
-          return Text(typedError.message);
+          return ContentPlaceholder(
+            title: typedError.message,
+            action: TextButton(
+              onPressed: () {
+                setState(() {
+                  _futureAvailableDates = repository.getAvailableDates();
+                });
+              },
+              child: Text(AppLocalizations.of(context)!.refresh),
+            ),
+          );
         } else if (snapshot.hasSuccessResult) {
           final AvailableDates dates = snapshot.successData();
           // todo: pass dates into DaySelectorListView
@@ -216,8 +226,18 @@ class DayListState extends State<DayList> {
         AsyncSnapshot<Result<ScheduleForDate>> snapshot,
       ) {
         if (snapshot.hasErrorOrFailureResult) {
-          // todo: create beautiful error screen
-          return Text(snapshot.typedError.message);
+          return ContentPlaceholder(
+            title: snapshot.typedError.message,
+            action: TextButton(
+              onPressed: () {
+                setState(() {
+                  _futureScheduleForDate =
+                      _repository.getScheduleForDate(widget.date);
+                });
+              },
+              child: Text(AppLocalizations.of(context)!.refresh),
+            ),
+          );
         } else if (snapshot.hasSuccessResult) {
           final ScheduleForDate scheduleForDate = snapshot.successData();
           final alert = scheduleForDate.alert;

@@ -4,6 +4,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:washing_schedule/auth/auth.dart';
 import 'package:washing_schedule/core/models/result.dart';
 import 'package:washing_schedule/core/models/typed_error.dart';
+import 'package:washing_schedule/design_system/content_placeholder.dart';
 import 'package:washing_schedule/design_system/list_item.dart';
 import 'package:washing_schedule/di/application_module.dart';
 import 'package:washing_schedule/home/app_bar_provider.dart';
@@ -45,13 +46,11 @@ class ProfilePageState extends State<ProfilePage> {
   final ProfileRepository _profileRepository = getIt.get();
   ProfileResponse? _profileResponse;
 
-  @override
-  void initState() {
-    super.initState();
+  _initProfileRequest() {
     _futureProfileData = getUserId().then((userId) async {
       if (userId == null) {
         return await requireAuth(context).then(
-          (authResult) {
+              (authResult) {
             if (authResult is Success) {
               return _profileRepository.getProfileInfo(authResult.userId);
             } else {
@@ -64,6 +63,12 @@ class ProfilePageState extends State<ProfilePage> {
         return _profileRepository.getProfileInfo(userId);
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initProfileRequest();
   }
 
   goHome(BuildContext context) {
@@ -79,8 +84,13 @@ class ProfilePageState extends State<ProfilePage> {
         builder: (context, snapshot) {
           if (snapshot.hasErrorOrFailureResult) {
             final typedError = snapshot.typedError;
-            // todo: create beautiful error screen
-            return Text(typedError.message);
+            return ContentPlaceholder(
+              title: typedError.message,
+              action: TextButton(
+                onPressed: () => setState(_initProfileRequest),
+                child: Text(AppLocalizations.of(context)!.refresh),
+              ),
+            );
           } else if (snapshot.hasSuccessResult) {
             final textBodyStyle = Theme.of(context).textTheme.bodyText1;
             final ProfileResponse data = snapshot.successData();

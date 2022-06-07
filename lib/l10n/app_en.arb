@@ -21,5 +21,7 @@
   "themeSelectorHeader": "Choose a theme",
   "systemThemeName": "System",
   "lightThemeName": "Light",
-  "darkThemeName": "Dark"
+  "darkThemeName": "Dark",
+
+  "refresh": "Refresh"
 }
