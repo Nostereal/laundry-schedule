@@ -28,4 +28,19 @@ Result<T> parseResult<T>(String jsonBody, T Function(Json) resultParser) {
   }
 }
 
+extension Utils<T> on Result<T> {
+  checkForType({
+    Function(SuccessResult<T>)? onSuccessResult,
+    Function(FailureResult<T>)? onFailureResult,
+  }) {
+    if (this is SuccessResult) {
+      onSuccessResult?.call(this as SuccessResult<T>);
+    } else if (this is FailureResult) {
+      onFailureResult?.call(this as FailureResult<T>);
+    } else {
+      throw Exception('unhandled type of Result<T>');
+    }
+  }
+}
+
 typedef Json = Map<String, dynamic>;

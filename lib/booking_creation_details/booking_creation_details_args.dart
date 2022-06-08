@@ -1,8 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:washing_schedule/mocked_data/bookings.dart';
 
+@immutable
 class BookingCreationDetailsArgs {
   final int sessionNum;
-  final User user;
+  final int userId;
+  final DateTime date;
 
-  BookingCreationDetailsArgs(this.sessionNum, this.user);
+  const BookingCreationDetailsArgs({
+    required this.sessionNum,
+    required this.userId,
+    required this.date,
+  });
 }

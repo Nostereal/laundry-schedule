@@ -317,9 +317,10 @@ class DayListState extends State<DayList> {
                   context,
                   BookingCreationDetailsRoute.routeName,
                   arguments: BookingCreationDetailsArgs(
-                    session.sessionNum,
-                    me,
-                  ), // todo: pass user info
+                    sessionNum: session.sessionNum,
+                    userId: authResult.userId,
+                    date: widget.date,
+                  ),
                 );
               } else {
                 showTextSnackBar(context, 'Authorization failed 😔');

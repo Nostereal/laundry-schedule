@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:washing_schedule/booking_creation_details/booking_creation_details.dart';
+import 'package:washing_schedule/booking_creation_details/booking_creation_details_args.dart';
 import 'package:washing_schedule/home/home.dart';
 import 'package:washing_schedule/home/home_page_args.dart';
 import 'package:washing_schedule/profile/profile.dart';
 import 'package:washing_schedule/settings/settings.dart';
+import 'package:washing_schedule/utils/cast.dart';
 
 final Map<String, Widget Function(BuildContext)> routes = {
   // HomePage.routeName: (context) => const HomePage(),
-  BookingCreationDetailsRoute.routeName: (context) =>
-      const BookingCreationDetailsRoute(),
   SettingsPage.routeName: (context) => const SettingsPage(),
 };
 
@@ -32,4 +32,13 @@ final Map<String, Route<Object> Function(RouteSettings)> routeGenerator = {
           arguments: HomePageArgs('Profile', 1),
         ),
       ),
+  BookingCreationDetailsRoute.routeName: (settings) =>
+      MaterialPageRoute(builder: (ctx) {
+        final args = cast<BookingCreationDetailsArgs>(settings.arguments)!;
+        return BookingCreationDetailsRoute(
+          sessionNum: args.sessionNum,
+          date: args.date,
+          userId: args.userId,
+        );
+      }),
 };
