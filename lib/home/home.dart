@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeNotifier>(
         builder: (context, ThemeNotifier themeNotifier, child) {
           return MaterialApp(
-            onGenerateTitle: (context) => AppLocalizations.of(context)!.schedulePageTitle,
+            onGenerateTitle: (context) => context.appLocal.schedulePageTitle,
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
@@ -123,11 +123,11 @@ class _HomePageState extends State<HomePage> {
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.calendar_today_outlined),
-            label: AppLocalizations.of(context)!.bottomSheetScheduleLabel,
+            label: context.appLocal.bottomSheetScheduleLabel,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.person_outline),
-            label: AppLocalizations.of(context)!.bottomSheetProfileLabel,
+            label: context.appLocal.bottomSheetProfileLabel,
           ),
         ],
       ),

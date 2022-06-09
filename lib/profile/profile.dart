@@ -9,6 +9,7 @@ import 'package:washing_schedule/design_system/list_item.dart';
 import 'package:washing_schedule/di/application_module.dart';
 import 'package:washing_schedule/home/app_bar_provider.dart';
 import 'package:washing_schedule/home/home.dart';
+import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/profile/models/profile_booking.dart';
 import 'package:washing_schedule/profile/models/profile_response.dart';
 import 'package:washing_schedule/profile/my_bookings.dart';
@@ -28,7 +29,7 @@ class ProfilePage extends StatefulWidget with AppBarProvider {
   @override
   AppBar? provideAppBar(BuildContext context) {
     return AppBar(
-      title: Text(AppLocalizations.of(context)!.profilePageTitle),
+      title: Text(context.appLocal.profilePageTitle),
       actions: [
         IconButton(
           icon: const Icon(Icons.settings_outlined),
@@ -88,7 +89,7 @@ class ProfilePageState extends State<ProfilePage> {
               title: typedError.message,
               action: TextButton(
                 onPressed: () => setState(_initProfileRequest),
-                child: Text(AppLocalizations.of(context)!.refresh),
+                child: Text(context.appLocal.refresh),
               ),
             );
           } else if (snapshot.hasSuccessResult) {
@@ -148,7 +149,7 @@ class ProfilePageState extends State<ProfilePage> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
                                 child: Text(
-                                    AppLocalizations.of(context)!.logOutButton),
+                                    context.appLocal.logOutButton),
                               )),
                         ),
                       ],

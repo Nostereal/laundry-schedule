@@ -30,7 +30,7 @@ class MyBookingsList extends StatelessWidget {
         Container(
           margin: insets,
           child: Text(
-            AppLocalizations.of(context)!.ownedBookingsHeader,
+            context.appLocal.ownedBookingsHeader,
             style: Theme.of(context).textTheme.headline4,
           ),
         ),
@@ -140,12 +140,12 @@ class NoBookingsBanner extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                AppLocalizations.of(context)!.noOwnedBookingsBannerTitle,
+                context.appLocal.noOwnedBookingsBannerTitle,
                 style: context.textTheme.headline5,
               ),
               const SizedBox(height: 8),
               Text(
-                AppLocalizations.of(context)!.noOwnedBookingsBannerText,
+                context.appLocal.noOwnedBookingsBannerText,
                 style: context.textTheme.bodyText1,
               ),
             ],

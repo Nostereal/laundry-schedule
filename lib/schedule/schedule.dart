@@ -11,6 +11,7 @@ import 'package:washing_schedule/design_system/theme.dart';
 import 'package:washing_schedule/di/application_module.dart';
 import 'package:washing_schedule/home/app_bar_provider.dart';
 import 'package:washing_schedule/home/home.dart';
+import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/mocked_data/bookings.dart';
 import 'package:washing_schedule/profile/profile.dart';
 import 'package:washing_schedule/schedule/day_selector.dart';
@@ -45,7 +46,7 @@ class SchedulePage extends StatelessWidget with AppBarProvider {
   @override
   AppBar? provideAppBar(BuildContext context) {
     return AppBar(
-      title: Text(AppLocalizations.of(context)!.schedulePageTitle),
+      title: Text(context.appLocal.schedulePageTitle),
     );
   }
 }
@@ -94,7 +95,7 @@ class CalendarPagerViewState extends State<CalendarPagerView> {
                   _futureAvailableDates = repository.getAvailableDates();
                 });
               },
-              child: Text(AppLocalizations.of(context)!.refresh),
+              child: Text(context.appLocal.refresh),
             ),
           );
         } else if (snapshot.hasSuccessResult) {
@@ -211,10 +212,14 @@ class DayListState extends State<DayList> {
 
   late Future<Result<ScheduleForDate>> _futureScheduleForDate;
 
+  _initScheduleForDateFuture() {
+    _futureScheduleForDate = _repository.getScheduleForDate(widget.date);
+  }
+
   @override
   void initState() {
     super.initState();
-    _futureScheduleForDate = _repository.getScheduleForDate(widget.date);
+    _initScheduleForDateFuture();
   }
 
   @override
@@ -235,7 +240,7 @@ class DayListState extends State<DayList> {
                       _repository.getScheduleForDate(widget.date);
                 });
               },
-              child: Text(AppLocalizations.of(context)!.refresh),
+              child: Text(context.appLocal.refresh),
             ),
           );
         } else if (snapshot.hasSuccessResult) {
@@ -311,9 +316,9 @@ class DayListState extends State<DayList> {
           onTap: () {
             requireAuth(
               context,
-            ).then((authResult) {
+            ).then((authResult) async {
               if (authResult is Success) {
-                Navigator.pushNamed(
+                final bool? shouldRefresh = await Navigator.pushNamed<bool?>(
                   context,
                   BookingCreationDetailsRoute.routeName,
                   arguments: BookingCreationDetailsArgs(
@@ -322,6 +327,9 @@ class DayListState extends State<DayList> {
                     date: widget.date,
                   ),
                 );
+                if (shouldRefresh ?? false) {
+                  setState(_initScheduleForDateFuture);
+                }
               } else {
                 showTextSnackBar(context, 'Authorization failed 😔');
               }
@@ -399,7 +407,7 @@ class FreeToBookCard extends StatelessWidget {
         ),
       ),
       child: ScheduleCard(
-        title: AppLocalizations.of(context)!.createBookingButton,
+        title: context.appLocal.createBookingButton,
         icon: Icons.add,
         onTap: onTap,
       ),

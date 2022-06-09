@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:washing_schedule/design_system/theme_notifier.dart';
 import 'package:washing_schedule/home/home.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:washing_schedule/l10n/l10n.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -32,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.settingsPageTitle)),
+      appBar: AppBar(title: Text(context.appLocal.settingsPageTitle)),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -40,7 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: Text(
-              AppLocalizations.of(context)!.themeSelectorHeader,
+              context.appLocal.themeSelectorHeader,
               style: context.textTheme.headline4,
             ),
           ),
@@ -48,7 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
           Center(
             child: Consumer(
               builder: (context, ThemeNotifier themeNotifier, child) => CupertinoSlidingSegmentedControl(
-                thumbColor: Theme.of(context).colorScheme.secondaryVariant,
+                thumbColor: context.theme.colorScheme.primaryContainer,
                 groupValue: themeNotifier.themeMode,
                 // padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 children: {
@@ -75,7 +76,7 @@ abstract class ThemeOption {
 
 class SystemTheme extends ThemeOption {
   SystemTheme(BuildContext context) {
-    name = AppLocalizations.of(context)!.systemThemeName;
+    name = context.appLocal.systemThemeName;
   }
 
   @override
@@ -87,7 +88,7 @@ class SystemTheme extends ThemeOption {
 
 class LightTheme extends ThemeOption {
   LightTheme(BuildContext context) {
-    name = AppLocalizations.of(context)!.lightThemeName;
+    name = context.appLocal.lightThemeName;
   }
 
   @override
@@ -99,7 +100,7 @@ class LightTheme extends ThemeOption {
 
 class DarkTheme extends ThemeOption {
   DarkTheme(BuildContext context) {
-    name = AppLocalizations.of(context)!.darkThemeName;
+    name = context.appLocal.darkThemeName;
   }
 
   @override

@@ -34,7 +34,7 @@ class Themes {
         headline4: TextStyle(
             fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
         headline5: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-        headline6: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+        headline6: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         subtitle1: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         subtitle2: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
         bodyText1: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
@@ -50,14 +50,18 @@ class Themes {
       cardColor: primaryLight,
       bottomSheetTheme: const BottomSheetThemeData(shape: bottomSheetShape),
       dividerColor: Colors.grey[500],
+      progressIndicatorTheme: const ProgressIndicatorThemeData(color: Color(0xffc1ff07)),
     );
   }
 
   static MaterialColor primaryDark = Colors.amber;
 
   static ColorScheme darkColorScheme = ColorScheme.dark(
-    secondary: const Color(0xff008c88),
-    secondaryVariant: const Color(0xff006e69),
+    primary: const Color(0xff008c88),
+    primaryContainer: const Color(0xff006e69),
+    secondary: const Color(0xffab67f9),
+    secondaryContainer: const Color(0xff8002ea),
+    // onSecondary: const Color(0xff973ef7),
     onSurface: Colors.grey[300]!,
     onBackground: Colors.grey[300]!,
   );
@@ -102,12 +106,13 @@ class Themes {
       ),
       cardTheme: CardTheme(
         elevation: 1,
-        color: darkColorScheme.secondaryVariant,
+        color: darkColorScheme.primaryContainer,
         shape: cardShape,
       ),
-      dividerColor: darkColorScheme.secondary,
+      dividerColor: darkColorScheme.primary,
       iconTheme: IconThemeData(color: textColor),
       bottomSheetTheme: const BottomSheetThemeData(shape: bottomSheetShape),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: darkColorScheme.secondary),
       // cardColor: primaryDark,
     );
   }

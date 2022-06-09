@@ -1,9 +1,6 @@
 import 'package:build_context/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:intl/intl.dart';
-import 'package:washing_schedule/auth/auth.dart';
 import 'package:washing_schedule/booking_creation_details/booking_repository.dart';
 import 'package:washing_schedule/booking_creation_details/models/booking_intention_info.dart';
 import 'package:washing_schedule/core/models/result.dart';
@@ -13,9 +10,6 @@ import 'package:washing_schedule/home/home.dart';
 import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/profile/profile.dart';
 import 'package:washing_schedule/schedule/schedule.dart';
-import 'package:washing_schedule/utils/routing.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'booking_creation_details_args.dart';
 
 class BookingCreationDetailsRoute extends StatefulWidget {
   const BookingCreationDetailsRoute({
@@ -58,9 +52,22 @@ class _BookingCreationDetailsRouteState
     _initBookingIntentionRequest();
   }
 
+  Scaffold _bookingCreationScaffold({
+    List<Widget>? footerButtons,
+    required Widget body,
+  }) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: const BackButton(),
+        title: Text(context.appLocal.bookingDetailsPageTitle),
+      ),
+      persistentFooterButtons: footerButtons,
+      body: body,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // final BookingCreationDetailsArgs args = extractArgsFrom(context);
     return FutureBuilder(
       future: _futureBookingIntention,
       builder: (
@@ -68,11 +75,13 @@ class _BookingCreationDetailsRouteState
         AsyncSnapshot<Result<BookingIntentionInfo>> snapshot,
       ) {
         if (snapshot.hasErrorOrFailureResult) {
-          return ContentPlaceholder(
-            title: snapshot.typedError.message,
-            action: ElevatedButton(
-              onPressed: () => setState(_initBookingIntentionRequest),
-              child: Text(AppLocalizations.of(context)!.refresh),
+          return _bookingCreationScaffold(
+            body: ContentPlaceholder(
+              title: snapshot.typedError.message,
+              action: ElevatedButton(
+                onPressed: () => setState(_initBookingIntentionRequest),
+                child: Text(context.appLocal.refresh),
+              ),
             ),
           );
         }
@@ -87,40 +96,23 @@ class _BookingCreationDetailsRouteState
               SizedBox(height: 8),
             ],
           );
-          return Scaffold(
-            appBar: AppBar(
-              leading: const BackButton(),
-              title:
-                  Text(AppLocalizations.of(context)!.bookingDetailsPageTitle),
-            ),
-            persistentFooterButtons: [
+          return _bookingCreationScaffold(
+            footerButtons: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: ElevatedButton(
-                  child: _createBookingButtonContent(context),
                   onPressed: () async {
-                    setState(() {
-                      _bookingCreationLoading = true;
-                    });
-                    final result = await _repository.createBooking(
-                      widget.userId,
-                      widget.sessionNum,
-                      widget.date,
-                    );
-
+                    final result = await _createBooking();
                     result.checkForType(
                       onFailureResult: (failure) {
                         showTextSnackBar(context, failure.error.message);
                       },
                       onSuccessResult: (success) {
-                        // todo: close page with result
+                        Navigator.pop(context, true);
                       },
                     );
-
-                    setState(() {
-                      _bookingCreationLoading = false;
-                    });
                   },
+                  child: _createBookingButtonContent(context),
                 ),
               ),
             ],
@@ -145,7 +137,7 @@ class _BookingCreationDetailsRouteState
                             Padding(
                               padding: const EdgeInsets.only(right: 6),
                               child: Text(
-                                '${AppLocalizations.of(context)!.name}: ',
+                                '${context.appLocal.name}: ',
                                 style: textTheme.headline5,
                               ),
                             ),
@@ -161,7 +153,7 @@ class _BookingCreationDetailsRouteState
                             Padding(
                               padding: const EdgeInsets.only(right: 6),
                               child: Text(
-                                '${AppLocalizations.of(context)!.date}: ',
+                                '${context.appLocal.date}: ',
                                 style: textTheme.headline5,
                               ),
                             ),
@@ -177,7 +169,7 @@ class _BookingCreationDetailsRouteState
                             Padding(
                               padding: const EdgeInsets.only(right: 6),
                               child: Text(
-                                '${AppLocalizations.of(context)!.timeBracket}: ',
+                                '${context.appLocal.timeBracket}: ',
                                 style: textTheme.headline5,
                               ),
                             ),
@@ -196,16 +188,35 @@ class _BookingCreationDetailsRouteState
           );
         }
 
-        return const Center(child: CircularProgressIndicator());
+        return _bookingCreationScaffold(
+          body: const Center(child: CircularProgressIndicator()),
+        );
       },
     );
+  }
+  
+  Future<Result<Object>> _createBooking() async {
+    setState(() {
+      _bookingCreationLoading = true;
+    });
+    final result = await _repository.createBooking(
+      widget.userId,
+      widget.sessionNum,
+      widget.date,
+    );
+
+    setState(() {
+      _bookingCreationLoading = false;
+    });
+
+    return result;
   }
 
   Widget _createBookingButtonContent(BuildContext context) {
     if (_bookingCreationLoading) {
       return const CircularProgressIndicator();
     } else {
-      return Text(AppLocalizations.of(context)!.submitNewBookingButton);
+      return Text(context.appLocal.submitNewBookingButton);
     }
   }
 }

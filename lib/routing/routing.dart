@@ -12,12 +12,12 @@ final Map<String, Widget Function(BuildContext)> routes = {
   SettingsPage.routeName: (context) => const SettingsPage(),
 };
 
-Route<Object>? generateRoute(RouteSettings settings) {
+Route<dynamic>? generateRoute(RouteSettings settings) {
   return routeGenerator[settings.name!]?.call(settings);
   // todo: should i create 404 page?
 }
 
-final Map<String, Route<Object> Function(RouteSettings)> routeGenerator = {
+final Map<String, Route<dynamic> Function(RouteSettings)> routeGenerator = {
   HomePage.routeName: (settings) => MaterialPageRoute(
         builder: (context) => const HomePage(),
         settings: RouteSettings(
@@ -33,7 +33,7 @@ final Map<String, Route<Object> Function(RouteSettings)> routeGenerator = {
         ),
       ),
   BookingCreationDetailsRoute.routeName: (settings) =>
-      MaterialPageRoute(builder: (ctx) {
+      MaterialPageRoute<bool?>(builder: (ctx) {
         final args = cast<BookingCreationDetailsArgs>(settings.arguments)!;
         return BookingCreationDetailsRoute(
           sessionNum: args.sessionNum,

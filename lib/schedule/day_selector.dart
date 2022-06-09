@@ -86,8 +86,8 @@ class DaySelectorListViewState extends State<DaySelectorListView> {
                   decoration: BoxDecoration(
                       borderRadius: borderRadius,
                       color: isItemSelected
-                          ? themeColor.secondary
-                          : themeColor.secondaryVariant),
+                          ? themeColor.primary
+                          : themeColor.primaryContainer),
                   child: SizedBox.square(
                     dimension: 64,
                     child: Column(
