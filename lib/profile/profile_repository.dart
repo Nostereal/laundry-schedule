@@ -6,8 +6,8 @@ import 'package:washing_schedule/profile/profile_api.dart';
 class ProfileRepository {
   final ProfileApi api = getIt.get();
 
-  Future<Result<ProfileResponse>> getProfileInfo(int userId) {
-    return api.getProfileInfo(userId);
+  Future<Result<ProfileResponse>> getProfileInfo(String token) {
+    return api.getProfileInfo(token);
   }
 
   Future<Result<Object?>> deleteBooking(String bookingId) {

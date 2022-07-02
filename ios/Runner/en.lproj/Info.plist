@@ -43,6 +43,7 @@
 	<false/>
 	<key>CFBundleLocalizations</key>
 	<array>
+		<string>Russian</string>
 		<string>en</string>
 	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>

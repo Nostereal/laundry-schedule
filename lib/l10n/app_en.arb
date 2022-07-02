@@ -23,5 +23,10 @@
   "lightThemeName": "Light",
   "darkThemeName": "Dark",
 
+  "authHeader": "Log into your account",
+  "loginHint": "Username",
+  "passwordHint": "Password",
+  "loginButton": "Log in",
+
   "refresh": "Refresh"
 }

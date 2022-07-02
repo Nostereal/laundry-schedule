@@ -6,7 +6,9 @@ import 'package:washing_schedule/core/models/typed_error.dart';
 import 'package:washing_schedule/design_system/form_input.dart';
 import 'package:washing_schedule/di/application_module.dart';
 import 'package:washing_schedule/home/home.dart';
-import 'package:washing_schedule/schedule/schedule.dart';
+import 'package:washing_schedule/l10n/l10n.dart';
+import 'package:washing_schedule/utils/snackbars.dart';
+
 import 'models/auth_response.dart';
 
 class AuthPage extends StatefulWidget {
@@ -40,16 +42,13 @@ class _AuthPageState extends State<AuthPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Log into your account',
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .headline5,
+                    context.appLocal.authHeader,
+                    style: Theme.of(context).textTheme.headline5,
                   ),
                   const SizedBox(height: 12),
                   FormInput(
                     controller: loginController,
-                    hint: 'Username',
+                    hint: context.appLocal.loginHint,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Field must not be empty';
@@ -60,7 +59,7 @@ class _AuthPageState extends State<AuthPage> {
                   const SizedBox(height: 8),
                   FormInput(
                     controller: passwordController,
-                    hint: 'Password',
+                    hint: context.appLocal.passwordHint,
                     obscureText: true,
                     enableSuggestions: false,
                     autocorrect: false,
@@ -94,16 +93,19 @@ class _AuthPageState extends State<AuthPage> {
                 });
                 if (result is SuccessResult) {
                   final AuthResponse data = (result as SuccessResult).data;
-                  storeUserId(data.userId);
-                  Navigator.pop(context, data.userId);
+                  storeUserToken(data.token);
+                  Navigator.pop(context, data.token);
                 } else {
                   final TypedError error = (result as FailureResult).error;
                   showTextSnackBar(context, error.message);
                 }
               },
               child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text('Log in'),
+                  ? Transform.scale(
+                      scale: 0.6,
+                      child: const CircularProgressIndicator(),
+                    )
+                  : Text(context.appLocal.loginButton),
             ),
           ),
         ],
@@ -112,26 +114,26 @@ class _AuthPageState extends State<AuthPage> {
   }
 }
 
-const String prefsUserIdKey = 'userId';
+const String prefsUserTokenKey = 'userToken';
 
-Future<void> storeUserId(int? userId) async {
+Future<void> storeUserToken(String? token) async {
   final prefs = await SharedPreferences.getInstance();
-  if (userId == null) {
-    prefs.remove(prefsUserIdKey);
+  if (token == null) {
+    prefs.remove(prefsUserTokenKey);
   } else {
-    prefs.setInt(prefsUserIdKey, userId);
+    prefs.setString(prefsUserTokenKey, token);
   }
 }
 
-Future<int?> getUserId() async {
+Future<String?> getUserToken() async {
   final prefs = await SharedPreferences.getInstance();
-  return prefs.getInt(prefsUserIdKey);
+  return prefs.getString(prefsUserTokenKey);
 }
 
 Future<AuthResult> requireAuth(BuildContext context) {
-  return getUserId().then((userId) async {
-    if (userId != null) {
-      return Success(userId);
+  return getUserToken().then((token) async {
+    if (token != null) {
+      return Success(token);
     } else {
       return await showModalBottomSheet(
         context: context,
@@ -143,13 +145,7 @@ Future<AuthResult> requireAuth(BuildContext context) {
         ),
         builder: (context) => const AuthPage(),
       ).then(
-        (userId) {
-          if (userId != null) {
-            return Success(userId);
-          } else {
-            return Failure();
-          }
-        },
+        (token) => token != null ? Success(token) : Failure(),
       );
     }
   });
@@ -158,9 +154,9 @@ Future<AuthResult> requireAuth(BuildContext context) {
 abstract class AuthResult {}
 
 class Success extends AuthResult {
-  final int userId;
+  final String token;
 
-  Success(this.userId);
+  Success(this.token);
 }
 
 class Failure extends AuthResult {}

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -50,10 +49,10 @@ abstract class HttpClient {
 
 class LocalClient extends HttpClient {
   @override
-  String get baseUrl => "192.168.31.64:8080";
+  String get baseUrl => "192.168.31.65:8080";
 
   @override
   Uri _getFullUrl(String path, {Map<String, dynamic>? queryParams}) {
-    return Uri.http(baseUrl, "/api/" + path, queryParams);
+    return Uri.http(baseUrl, "/api/$path", queryParams);
   }
 }

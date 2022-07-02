@@ -1,3 +1,4 @@
+import 'package:build_context/build_context.dart';
 import 'package:flutter/material.dart';
 
 class FormInput extends StatelessWidget {
@@ -25,7 +26,7 @@ class FormInput extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       decoration: ShapeDecoration(
-        color: Colors.grey[200],
+        color: context.backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

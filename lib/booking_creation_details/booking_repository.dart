@@ -8,18 +8,18 @@ class BookingRepository {
   final BookingApi api = getIt.get();
 
   Future<Result<BookingIntentionInfo>> getIntentionInfo(
-    int userId,
+    String token,
     DateTime date,
     int sessionNum,
   ) {
-    return api.getIntentionInfo(userId, date, sessionNum);
+    return api.getIntentionInfo(token, date, sessionNum);
   }
 
   Future<Result<CreateBookingResponse>> createBooking(
-    int userId,
+    String token,
     int sessionNum,
     DateTime date,
   ) {
-    return api.createBooking(userId, sessionNum, date);
+    return api.createBooking(token, sessionNum, date);
   }
 }

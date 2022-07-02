@@ -23,5 +23,10 @@
   "lightThemeName": "Светлая",
   "darkThemeName": "Тёмная",
 
+  "authHeader": "Войти в аккаунт",
+  "loginHint": "Имя пользователя",
+  "passwordHint": "Пароль",
+  "loginButton": "Войти",
+
   "refresh": "Обновить"
 }

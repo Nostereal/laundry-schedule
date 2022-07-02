@@ -8,8 +8,8 @@ import 'models/profile_response.dart';
 class ProfileApi {
   final HttpClient client = getIt.get();
 
-  Future<Result<ProfileResponse>> getProfileInfo(int userId) async {
-    final response = await client.get("1/profile", queryParams: { 'userId': [userId.toString()] });
+  Future<Result<ProfileResponse>> getProfileInfo(String token) async {
+    final response = await client.get("1/profile", queryParams: { 'token': [token] });
     return parseResult(
       response.body,
       (json) => ProfileResponse.fromJson(json),

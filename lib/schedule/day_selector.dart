@@ -29,25 +29,6 @@ class DaySelectorListView extends StatefulWidget {
 }
 
 class DaySelectorListViewState extends State<DaySelectorListView> {
-  // List<DateTime> _days = [];
-  // final int daysBeforeToday = 2;
-
-  @override
-  void initState() {
-    super.initState();
-    // final DateTime now = DateTime.now();
-    // const int daysInAdvance = 14;
-    // final prevDays = List.generate(
-    //   daysBeforeToday,
-    //       (index) => now.subtract(Duration(days: daysBeforeToday - index)),
-    // );
-    // final futureDays = List.generate(
-    //   daysInAdvance,
-    //       (idx) => DateTime.now().add(Duration(days: idx)),
-    // );
-    // _days = prevDays + futureDays;
-  }
-
   final borderRadius = BorderRadius.circular(10);
 
   @override
@@ -80,7 +61,6 @@ class DaySelectorListViewState extends State<DaySelectorListView> {
                 borderRadius: borderRadius,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                    vertical: 10,
                     horizontal: 4,
                   ),
                   decoration: BoxDecoration(
@@ -89,7 +69,7 @@ class DaySelectorListViewState extends State<DaySelectorListView> {
                           ? themeColor.primary
                           : themeColor.primaryContainer),
                   child: SizedBox.square(
-                    dimension: 64,
+                    dimension: DaySelectorListView.height,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,

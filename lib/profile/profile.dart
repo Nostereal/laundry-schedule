@@ -14,9 +14,8 @@ import 'package:washing_schedule/profile/models/profile_booking.dart';
 import 'package:washing_schedule/profile/models/profile_response.dart';
 import 'package:washing_schedule/profile/my_bookings.dart';
 import 'package:washing_schedule/profile/profile_repository.dart';
-import 'package:washing_schedule/schedule/schedule.dart';
 import 'package:washing_schedule/settings/settings.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:washing_schedule/utils/snackbars.dart';
 
 class ProfilePage extends StatefulWidget with AppBarProvider {
   const ProfilePage({Key? key}) : super(key: key);
@@ -48,12 +47,12 @@ class ProfilePageState extends State<ProfilePage> {
   ProfileResponse? _profileResponse;
 
   _initProfileRequest() {
-    _futureProfileData = getUserId().then((userId) async {
+    _futureProfileData = getUserToken().then((userId) async {
       if (userId == null) {
         return await requireAuth(context).then(
-              (authResult) {
+          (authResult) {
             if (authResult is Success) {
-              return _profileRepository.getProfileInfo(authResult.userId);
+              return _profileRepository.getProfileInfo(authResult.token);
             } else {
               goHome(context);
               throw Exception("Auth didn't succeed");
@@ -141,16 +140,18 @@ class ProfilePageState extends State<ProfilePage> {
                         const SizedBox(height: 24),
                         Center(
                           child: OutlinedButton(
-                              onPressed: () {
-                                storeUserId(null);
-                                goHome(context);
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                child: Text(
-                                    context.appLocal.logOutButton),
-                              )),
+                            onPressed: () {
+                              storeUserToken(null);
+                              goHome(context);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              child: Text(context.appLocal.logOutButton),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -216,7 +217,7 @@ class AvatarImage extends StatelessWidget {
     return Container(
         decoration: ShapeDecoration(
           shape: CircleBorder(
-            side: BorderSide(color: Colors.grey[600]!, width: 1.2),
+            side: BorderSide(color: Colors.grey[600]!, width: 1),
           ),
         ),
         child: ClipOval(child: image));

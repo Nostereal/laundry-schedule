@@ -1,6 +1,6 @@
-import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:universal_io/io.dart';
 
 class L10n {
   static const all = [

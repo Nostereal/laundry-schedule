@@ -9,17 +9,17 @@ import 'package:washing_schedule/di/application_module.dart';
 import 'package:washing_schedule/home/home.dart';
 import 'package:washing_schedule/l10n/l10n.dart';
 import 'package:washing_schedule/profile/profile.dart';
-import 'package:washing_schedule/schedule/schedule.dart';
+import 'package:washing_schedule/utils/snackbars.dart';
 
 class BookingCreationDetailsRoute extends StatefulWidget {
   const BookingCreationDetailsRoute({
     Key? key,
     required this.date,
     required this.sessionNum,
-    required this.userId,
+    required this.token,
   }) : super(key: key);
 
-  final int userId;
+  final String token;
   final DateTime date;
   final int sessionNum;
 
@@ -40,7 +40,7 @@ class _BookingCreationDetailsRouteState
 
   _initBookingIntentionRequest() {
     _futureBookingIntention = _repository.getIntentionInfo(
-      widget.userId,
+      widget.token,
       widget.date,
       widget.sessionNum,
     );
@@ -200,7 +200,7 @@ class _BookingCreationDetailsRouteState
       _bookingCreationLoading = true;
     });
     final result = await _repository.createBooking(
-      widget.userId,
+      widget.token,
       widget.sessionNum,
       widget.date,
     );
@@ -214,7 +214,10 @@ class _BookingCreationDetailsRouteState
 
   Widget _createBookingButtonContent(BuildContext context) {
     if (_bookingCreationLoading) {
-      return const CircularProgressIndicator();
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
     } else {
       return Text(context.appLocal.submitNewBookingButton);
     }

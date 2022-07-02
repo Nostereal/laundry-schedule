@@ -38,7 +38,7 @@ final Map<String, Route<dynamic> Function(RouteSettings)> routeGenerator = {
         return BookingCreationDetailsRoute(
           sessionNum: args.sessionNum,
           date: args.date,
-          userId: args.userId,
+          token: args.token,
         );
       }),
 };

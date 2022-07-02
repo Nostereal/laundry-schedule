@@ -1,10 +1,9 @@
+import 'package:build_context/build_context.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:build_context/build_context.dart';
 import 'package:provider/provider.dart';
 import 'package:washing_schedule/design_system/theme_notifier.dart';
 import 'package:washing_schedule/home/home.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:washing_schedule/l10n/l10n.dart';
 
 class SettingsPage extends StatefulWidget {

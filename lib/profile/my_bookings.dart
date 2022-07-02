@@ -125,9 +125,6 @@ class NoBookingsBanner extends StatelessWidget {
       margin: margin,
       child: Card(
         margin: EdgeInsets.zero,
-        color: context.platformBrightness == Brightness.dark
-            ? Colors.grey[700]
-            : Colors.grey[300],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.only(

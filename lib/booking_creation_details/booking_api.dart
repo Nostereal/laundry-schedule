@@ -11,12 +11,12 @@ class BookingApi {
   final HttpClient client = getIt.get();
 
   Future<Result<BookingIntentionInfo>> getIntentionInfo(
-    int userId,
+    String token,
     DateTime date,
     int sessionNum,
   ) async {
     Map<String, dynamic> query = {
-      'userId': [userId.toString()],
+      'token': [token],
       'date': [DateFormat('yyyy-MM-dd').format(date)],
       'sessionNum': [sessionNum.toString()],
     };
@@ -29,12 +29,12 @@ class BookingApi {
   }
 
   Future<Result<CreateBookingResponse>> createBooking(
-    int userId,
+    String token,
     int sessionNum,
     DateTime date,
   ) async {
     Json body = {
-      'userId': userId,
+      'token': token,
       'date': DateFormat('yyyy-MM-dd').format(date),
       'sessionNum': sessionNum.toString(),
     };
